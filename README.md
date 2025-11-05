@@ -102,4 +102,3 @@ See `.env.example` for all required environment variables.
 ## License
 
 MIT License - Copyright (c) 2025 devjaes
-# securis-api

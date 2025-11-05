@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: securis-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: securis_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5431:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - securis-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    container_name: securis-api
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/securis_db
+      NODE_ENV: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - securis-network
+    command: pnpm run start:dev
+
+volumes:
+  postgres_data:
+
+networks:
+  securis-network:
+    driver: bridge
