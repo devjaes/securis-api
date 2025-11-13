@@ -21,15 +21,12 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin:
-      configService.get<string>('CORS_ORIGIN') || 'https://localhost:5173',
+    origin: configService.get<string>('CORS_ORIGIN') || 'https://localhost:5173',
     credentials: true,
   });
 
   await app.listen(port);
-  console.log(
-    `🚀 Application is running on: http://localhost:${port}/${apiPrefix}`,
-  );
+  console.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);
 }
 
 bootstrap();
