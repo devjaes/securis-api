@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import configurations from './config';
+import { EncryptionModule } from './features/encryption';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import configurations from './config';
       envFilePath: '.env',
     }),
     DatabaseModule,
+    EncryptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

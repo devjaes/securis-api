@@ -63,3 +63,5 @@ ssl/
 # Drizzle
 drizzle/
 
+# Huffman Trees (SECURITY: Never commit these files)
+src/features/encryption/trees/*.tree.json
