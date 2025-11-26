@@ -25,6 +25,16 @@ export default tseslint.config(
     },
   },
   {
+    files: ['test/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+        project: './tsconfig.e2e.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
     rules: {
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
