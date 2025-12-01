@@ -21,12 +21,25 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN') || 'https://localhost:5173',
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    exposedHeaders: ['Content-Type'],
   });
 
   await app.listen(port);
   console.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);
 }
 
-bootstrap();
+void bootstrap();

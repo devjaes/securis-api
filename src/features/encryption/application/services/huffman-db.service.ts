@@ -7,21 +7,21 @@ import { DecodeTextUseCase } from '../use-cases/decode-text.use-case';
 
 /**
  * Huffman Database Service
- * 
+ *
  * NestJS injectable service that provides Huffman encryption/decryption
  * for the database layer using the database-specific Huffman tree.
- * 
+ *
  * @remarks
  * This service is used to encrypt sensitive columns before storing in the database
  * and decrypt them when reading. It uses a different tree than the backend service
  * to provide an additional layer of security.
- * 
+ *
  * @example
  * ```typescript
  * @Injectable()
  * class UserRepository {
  *   constructor(private huffmanDb: HuffmanDbService) {}
- *   
+ *
  *   async saveUser(email: string) {
  *     const encryptedEmail = await this.huffmanDb.encode(email);
  *     // ... save to database
@@ -62,19 +62,19 @@ export class HuffmanDbService implements OnModuleInit {
       this.decodeUseCase = new DecodeTextUseCase(this.tree);
     } catch (error) {
       throw new Error(
-        `Failed to load Huffman database tree from ${treePath}: ${error.message}`,
+        `Failed to load Huffman database tree from ${treePath}: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
   /**
    * Encodes text using Huffman compression (for database storage)
-   * 
+   *
    * @param text - Plain text to encode
    * @returns Base64-encoded compressed text
    * @throws {Error} If tree is not loaded or text contains unsupported characters
    */
-  async encode(text: string): Promise<string> {
+  encode(text: string): string {
     this.ensureTreeLoaded();
 
     const result = this.encodeUseCase!.execute({ text });
@@ -88,12 +88,12 @@ export class HuffmanDbService implements OnModuleInit {
 
   /**
    * Decodes Huffman-compressed text (from database storage)
-   * 
+   *
    * @param encodedText - Base64-encoded compressed text
    * @returns Original plain text
    * @throws {Error} If tree is not loaded or encoded text is invalid
    */
-  async decode(encodedText: string): Promise<string> {
+  decode(encodedText: string): string {
     this.ensureTreeLoaded();
 
     const result = this.decodeUseCase!.execute({ encodedText });
@@ -109,11 +109,11 @@ export class HuffmanDbService implements OnModuleInit {
    * Encodes multiple fields at once (batch operation)
    * Useful for encrypting multiple columns in a single row
    */
-  async encodeMultiple(fields: Record<string, string>): Promise<Record<string, string>> {
+  encodeMultiple(fields: Record<string, string>): Record<string, string> {
     const encoded: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(fields)) {
-      encoded[key] = await this.encode(value);
+      encoded[key] = this.encode(value);
     }
 
     return encoded;
@@ -122,11 +122,11 @@ export class HuffmanDbService implements OnModuleInit {
   /**
    * Decodes multiple fields at once (batch operation)
    */
-  async decodeMultiple(fields: Record<string, string>): Promise<Record<string, string>> {
+  decodeMultiple(fields: Record<string, string>): Record<string, string> {
     const decoded: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(fields)) {
-      decoded[key] = await this.decode(value);
+      decoded[key] = this.decode(value);
     }
 
     return decoded;

@@ -6,3 +6,4 @@ export * from './use-cases/generate-huffman-trees.use-case';
 // Services
 export * from './services/huffman-back.service';
 export * from './services/huffman-db.service';
+export * from './services/huffman-front.service';

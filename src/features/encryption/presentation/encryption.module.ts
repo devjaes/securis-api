@@ -1,25 +1,22 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { HuffmanBackService, HuffmanDbService } from '../application';
+import { HuffmanBackService, HuffmanDbService, HuffmanFrontService } from '../application';
+import { EncryptionController } from './encryption.controller';
+import { DecryptionMiddleware } from './middleware/decryption.middleware';
 
 /**
  * Encryption Module
  *
- * NestJS module that provides Huffman encryption services.
- * Exports HuffmanBackService and HuffmanDbService for use in other modules.
- *
- * @example
- * ```typescript
- * @Module({
- *   imports: [EncryptionModule],
- *   providers: [DocumentService],
- * })
- * export class DocumentModule {}
- * ```
+ * Provides Huffman encryption services and decryption middleware.
  */
 @Module({
   imports: [ConfigModule],
-  providers: [HuffmanBackService, HuffmanDbService],
-  exports: [HuffmanBackService, HuffmanDbService],
+  controllers: [EncryptionController],
+  providers: [HuffmanBackService, HuffmanDbService, HuffmanFrontService],
+  exports: [HuffmanBackService, HuffmanDbService, HuffmanFrontService],
 })
-export class EncryptionModule {}
+export class EncryptionModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DecryptionMiddleware).forRoutes('*');
+  }
+}
