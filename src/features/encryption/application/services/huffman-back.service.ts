@@ -7,20 +7,20 @@ import { DecodeTextUseCase } from '../use-cases/decode-text.use-case';
 
 /**
  * Huffman Backend Service
- * 
+ *
  * NestJS injectable service that provides Huffman encryption/decryption
  * for the backend layer using the backend-specific Huffman tree.
- * 
+ *
  * @remarks
  * This service loads the Huffman tree on module initialization and
  * provides encode/decode methods for use throughout the application.
- * 
+ *
  * @example
  * ```typescript
  * @Injectable()
  * class DocumentService {
  *   constructor(private huffmanBack: HuffmanBackService) {}
- *   
+ *
  *   async createDocument(content: string) {
  *     const encrypted = await this.huffmanBack.encode(content);
  *     // ... save to database
@@ -61,19 +61,19 @@ export class HuffmanBackService implements OnModuleInit {
       this.decodeUseCase = new DecodeTextUseCase(this.tree);
     } catch (error) {
       throw new Error(
-        `Failed to load Huffman backend tree from ${treePath}: ${error.message}`,
+        `Failed to load Huffman backend tree from ${treePath}: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
   /**
    * Encodes text using Huffman compression
-   * 
+   *
    * @param text - Plain text to encode
    * @returns Base64-encoded compressed text
    * @throws {Error} If tree is not loaded or text contains unsupported characters
    */
-  async encode(text: string): Promise<string> {
+  encode(text: string): string {
     this.ensureTreeLoaded();
 
     const result = this.encodeUseCase!.execute({ text });
@@ -87,12 +87,12 @@ export class HuffmanBackService implements OnModuleInit {
 
   /**
    * Decodes Huffman-compressed text
-   * 
+   *
    * @param encodedText - Base64-encoded compressed text
    * @returns Original plain text
    * @throws {Error} If tree is not loaded or encoded text is invalid
    */
-  async decode(encodedText: string): Promise<string> {
+  decode(encodedText: string): string {
     this.ensureTreeLoaded();
 
     const result = this.decodeUseCase!.execute({ encodedText });
@@ -125,7 +125,7 @@ export class HuffmanBackService implements OnModuleInit {
   /**
    * Gets compression statistics for a text
    */
-  async getCompressionStats(text: string): Promise<CompressionStats> {
+  getCompressionStats(text: string): CompressionStats {
     this.ensureTreeLoaded();
 
     const result = this.encodeUseCase!.execute({ text });
