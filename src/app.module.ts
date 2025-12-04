@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import configurations from './config';
 import { EncryptionModule } from './features/encryption';
+import { AuthModule } from './features/auth/auth.module';
+import { UsersModule } from './features/users/users.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { EncryptionModule } from './features/encryption';
     }),
     DatabaseModule,
     EncryptionModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
