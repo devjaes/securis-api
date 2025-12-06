@@ -72,7 +72,7 @@ BEGIN
         id INT PRIMARY KEY IDENTITY(1,1),
         microsoft_id VARCHAR(255) UNIQUE,
         email VARCHAR(255) NOT NULL UNIQUE,
-        name VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NULL, -- ⭐ NULLABLE
         qr_signature VARCHAR(500),
         password_hash VARCHAR(255),
         created_at DATETIME NOT NULL DEFAULT GETDATE(),
@@ -104,18 +104,17 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'documents')
 BEGIN
     CREATE TABLE documents (
         id INT PRIMARY KEY IDENTITY(1,1),
-        reference_number VARCHAR(50) NOT NULL UNIQUE,
         document_type VARCHAR(20) NOT NULL CHECK (document_type IN ('OFICIO', 'MEMORANDO')),
         category VARCHAR(20) NOT NULL CHECK (category IN ('NORMAL', 'CIFRADO')),
-        status VARCHAR(20) NOT NULL DEFAULT 'EN_ELABORACION' 
-            CHECK (status IN ('EN_ELABORACION', 'ENVIADO', 'RECIBIDO', 'NO_ENVIADO')),
+        status VARCHAR(20) NOT NULL DEFAULT 'BORRADOR' 
+            CHECK (status IN ('BORRADOR', 'EN_ELABORACION', 'ENVIADO', 'RECIBIDO', 'NO_ENVIADO')),
         subject VARCHAR(255) NOT NULL,
         body NVARCHAR(MAX) NOT NULL,
         author_id INT NOT NULL,
         parent_document_id INT NULL,
-        is_draft BIT DEFAULT 1,
         send_date DATETIME NULL,
-        encrypted_pdf_path VARCHAR(500) NULL,
+        pdf_path VARCHAR(500) NULL,
+        qr_signature NVARCHAR(MAX),
         created_at DATETIME NOT NULL DEFAULT GETDATE(),
         updated_at DATETIME NOT NULL DEFAULT GETDATE(),
         CONSTRAINT FK_documents_author FOREIGN KEY (author_id) REFERENCES users(id),
@@ -125,37 +124,17 @@ BEGIN
 END
 GO
 
--- User permissions table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'user_permissions')
-BEGIN
-    CREATE TABLE user_permissions (
-        id INT PRIMARY KEY IDENTITY(1,1),
-        grantor_user_id INT NOT NULL,
-        grantee_user_id INT NOT NULL,
-        permission_type VARCHAR(20) NOT NULL CHECK (permission_type IN ('LECTURA', 'ESCRITURA', 'LECTURA_ESCRITURA')),
-        pdf_password VARCHAR(255) NULL,
-        created_at DATETIME NOT NULL DEFAULT GETDATE(),
-        CONSTRAINT FK_permissions_grantor FOREIGN KEY (grantor_user_id) REFERENCES users(id) ON DELETE CASCADE,
-        CONSTRAINT FK_permissions_grantee FOREIGN KEY (grantee_user_id) REFERENCES users(id),
-        CONSTRAINT UQ_user_permissions UNIQUE(grantor_user_id, grantee_user_id)
-    );
-    PRINT 'Table user_permissions created';
-END
-GO
-
 -- Document recipients table
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'document_recipients')
 BEGIN
     CREATE TABLE document_recipients (
         id INT PRIMARY KEY IDENTITY(1,1),
         document_id INT NOT NULL,
-        sender_id INT NOT NULL,
-        recipient_id INT NOT NULL,
+        recipient_id INT NOT NULL, -- ⭐ REMOVED sender_id
         is_read BIT DEFAULT 0,
         read_date DATETIME NULL,
         created_at DATETIME NOT NULL DEFAULT GETDATE(),
         CONSTRAINT FK_recipients_document FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
-        CONSTRAINT FK_recipients_sender FOREIGN KEY (sender_id) REFERENCES users(id),
         CONSTRAINT FK_recipients_recipient FOREIGN KEY (recipient_id) REFERENCES users(id)
     );
     PRINT 'Table document_recipients created';
@@ -170,28 +149,11 @@ BEGIN
         document_id INT NOT NULL,
         file_name VARCHAR(255) NOT NULL,
         file_path VARCHAR(500) NOT NULL,
-        file_size_bytes BIGINT,
+        -- ⭐ REMOVED file_size_bytes
         created_at DATETIME NOT NULL DEFAULT GETDATE(),
         CONSTRAINT FK_attachments_document FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
     );
     PRINT 'Table document_attachments created';
-END
-GO
-
--- Digital signatures table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'digital_signatures')
-BEGIN
-    CREATE TABLE digital_signatures (
-        id INT PRIMARY KEY IDENTITY(1,1),
-        document_id INT NOT NULL UNIQUE,
-        user_id INT NOT NULL,
-        qr_code NVARCHAR(MAX) NOT NULL,
-        document_hash VARCHAR(255) NOT NULL,
-        signature_date DATETIME NOT NULL DEFAULT GETDATE(),
-        CONSTRAINT FK_signatures_document FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
-        CONSTRAINT FK_signatures_user FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-    PRINT 'Table digital_signatures created';
 END
 GO
 
@@ -257,72 +219,44 @@ GO
 
 -- ⭐⭐⭐ DOCUMENTS TABLE - 2 campos enmascarados ⭐⭐⭐
 
--- Mask reference_number (shows: OF-****-001)
+-- Mask pdf_path (shows: XXXX)
 IF NOT EXISTS (
     SELECT 1 FROM sys.masked_columns 
     WHERE object_id = OBJECT_ID('documents') 
-    AND name = 'reference_number'
+    AND name = 'pdf_path'
 )
 BEGIN
     ALTER TABLE documents
-    ALTER COLUMN reference_number ADD MASKED WITH (FUNCTION = 'partial(3,"****",3)');
-    PRINT 'Data masking added to documents.reference_number';
+    ALTER COLUMN pdf_path ADD MASKED WITH (FUNCTION = 'default()');
+    PRINT 'Data masking added to documents.pdf_path';
 END
 GO
 
--- Mask body (shows first character only)
+-- Mask qr_signature (shows: XXXX)
 IF NOT EXISTS (
     SELECT 1 FROM sys.masked_columns 
     WHERE object_id = OBJECT_ID('documents') 
-    AND name = 'body'
+    AND name = 'qr_signature'
 )
 BEGIN
     ALTER TABLE documents
-    ALTER COLUMN body ADD MASKED WITH (FUNCTION = 'partial(1,"...[CONTENIDO OCULTO]...",0)');
-    PRINT 'Data masking added to documents.body';
-END
-GO
-
--- ⭐⭐⭐ USER_PERMISSIONS TABLE - 2 campos enmascarados ⭐⭐⭐
-
--- Mask grantor_user_id (shows: 0)
-IF NOT EXISTS (
-    SELECT 1 FROM sys.masked_columns 
-    WHERE object_id = OBJECT_ID('user_permissions') 
-    AND name = 'grantor_user_id'
-)
-BEGIN
-    ALTER TABLE user_permissions
-    ALTER COLUMN grantor_user_id ADD MASKED WITH (FUNCTION = 'default()');
-    PRINT 'Data masking added to user_permissions.grantor_user_id';
-END
-GO
-
--- Mask grantee_user_id (shows: 0)
-IF NOT EXISTS (
-    SELECT 1 FROM sys.masked_columns 
-    WHERE object_id = OBJECT_ID('user_permissions') 
-    AND name = 'grantee_user_id'
-)
-BEGIN
-    ALTER TABLE user_permissions
-    ALTER COLUMN grantee_user_id ADD MASKED WITH (FUNCTION = 'default()');
-    PRINT 'Data masking added to user_permissions.grantee_user_id';
+    ALTER COLUMN qr_signature ADD MASKED WITH (FUNCTION = 'default()');
+    PRINT 'Data masking added to documents.qr_signature';
 END
 GO
 
 -- ⭐⭐⭐ DOCUMENT_RECIPIENTS TABLE - 2 campos enmascarados ⭐⭐⭐
 
--- Mask sender_id (shows: 0)
+-- Mask document_id (shows: 0)
 IF NOT EXISTS (
     SELECT 1 FROM sys.masked_columns 
     WHERE object_id = OBJECT_ID('document_recipients') 
-    AND name = 'sender_id'
+    AND name = 'document_id'
 )
 BEGIN
     ALTER TABLE document_recipients
-    ALTER COLUMN sender_id ADD MASKED WITH (FUNCTION = 'default()');
-    PRINT 'Data masking added to document_recipients.sender_id';
+    ALTER COLUMN document_id ADD MASKED WITH (FUNCTION = 'default()');
+    PRINT 'Data masking added to document_recipients.document_id';
 END
 GO
 
@@ -364,34 +298,6 @@ BEGIN
     ALTER TABLE document_attachments
     ALTER COLUMN file_path ADD MASKED WITH (FUNCTION = 'default()');
     PRINT 'Data masking added to document_attachments.file_path';
-END
-GO
-
--- ⭐⭐⭐ DIGITAL_SIGNATURES TABLE - 2 campos enmascarados ⭐⭐⭐
-
--- Mask qr_code (shows: XXXX)
-IF NOT EXISTS (
-    SELECT 1 FROM sys.masked_columns 
-    WHERE object_id = OBJECT_ID('digital_signatures') 
-    AND name = 'qr_code'
-)
-BEGIN
-    ALTER TABLE digital_signatures
-    ALTER COLUMN qr_code ADD MASKED WITH (FUNCTION = 'default()');
-    PRINT 'Data masking added to digital_signatures.qr_code';
-END
-GO
-
--- Mask document_hash (shows: a3f****e9b)
-IF NOT EXISTS (
-    SELECT 1 FROM sys.masked_columns 
-    WHERE object_id = OBJECT_ID('digital_signatures') 
-    AND name = 'document_hash'
-)
-BEGIN
-    ALTER TABLE digital_signatures
-    ALTER COLUMN document_hash ADD MASKED WITH (FUNCTION = 'partial(3,"****",3)');
-    PRINT 'Data masking added to digital_signatures.document_hash';
 END
 GO
 
@@ -490,13 +396,6 @@ BEGIN
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_documents_reference' AND object_id = OBJECT_ID('documents'))
-BEGIN
-    CREATE INDEX idx_documents_reference ON documents(reference_number);
-    PRINT 'Index idx_documents_reference created';
-END
-GO
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_recipients_document' AND object_id = OBJECT_ID('document_recipients'))
 BEGIN
     CREATE INDEX idx_recipients_document ON document_recipients(document_id);
@@ -518,28 +417,20 @@ BEGIN
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_signatures_document' AND object_id = OBJECT_ID('digital_signatures'))
-BEGIN
-    CREATE INDEX idx_signatures_document ON digital_signatures(document_id);
-    PRINT 'Index idx_signatures_document created';
-END
-GO
-
--- Insert a test document
-DECLARE @authorId INT;
-SELECT @authorId = id FROM users WHERE email = 'admin@uta.edu.ec';
-
-IF NOT EXISTS (SELECT * FROM documents WHERE reference_number = 'OF-2024-001')
-BEGIN
-    INSERT INTO documents (reference_number, document_type, category, status, subject, body, author_id, is_draft)
-    VALUES ('OF-2024-001', 'OFICIO', 'NORMAL', 'EN_ELABORACION', 'Solicitud de vacaciones', 
-            'Este es el contenido del documento que será enmascarado', @authorId, 1);
-    PRINT 'Test document inserted';
-END
-GO
-
 PRINT '============================================';
 PRINT 'Database initialization completed successfully!';
 PRINT 'All tables have at least 2 masked columns';
 PRINT '============================================';
+PRINT '';
+PRINT 'Tables created (4 total):';
+PRINT '  ✓ users';
+PRINT '  ✓ password_reset_tokens';
+PRINT '  ✓ documents';
+PRINT '  ✓ document_recipients';
+PRINT '  ✓ document_attachments';
+PRINT '';
+PRINT 'Final changes applied:';
+PRINT '  ✓ users.name is now NULLABLE';
+PRINT '  ✓ Removed sender_id from document_recipients';
+PRINT '  ✓ Removed file_size_bytes from document_attachments';
 GO

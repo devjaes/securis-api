@@ -15,7 +15,7 @@ model User {
   id           Int      @id @default(autoincrement())
   microsoftId  String?  @unique @map("microsoft_id") @db.VarChar(255)
   email        String   @unique @db.VarChar(255)
-  name         String   @db.VarChar(255)
+  name         String?  @db.VarChar(255)
   qrSignature  String?  @map("qr_signature") @db.VarChar(500)
   passwordHash String?  @map("password_hash") @db.VarChar(255)
   createdAt    DateTime @default(now()) @map("created_at") @db.DateTime
@@ -24,11 +24,7 @@ model User {
   // Relations
   documentsCreated    Document[]           @relation("DocumentAuthor")
   passwordResetTokens PasswordResetToken[]
-  permissionsGranted  UserPermission[]     @relation("PermissionGrantor")
-  permissionsReceived UserPermission[]     @relation("PermissionGrantee")
-  documentsSent       DocumentRecipient[]  @relation("DocumentSender")
   documentsReceived   DocumentRecipient[]  @relation("DocumentRecipient")
-  digitalSignatures   DigitalSignature[]
 
   @@map("users")
 }
@@ -57,17 +53,16 @@ model PasswordResetToken {
 // ============================================
 model Document {
   id               Int       @id @default(autoincrement())
-  referenceNumber  String    @unique @map("reference_number") @db.VarChar(50)
   documentType     String    @map("document_type") @db.VarChar(20)
   category         String    @db.VarChar(20)
-  status           String    @default("EN_ELABORACION") @db.VarChar(20)
+  status           String    @default("BORRADOR") @db.VarChar(20)
   subject          String    @db.VarChar(255)
   body             String    @db.NVarChar(Max)
   authorId         Int       @map("author_id")
   parentDocumentId Int?      @map("parent_document_id")
-  isDraft          Boolean   @default(true) @map("is_draft") @db.Bit
   sendDate         DateTime? @map("send_date") @db.DateTime
-  encryptedPdfPath String?   @map("encrypted_pdf_path") @db.VarChar(500)
+  pdfPath          String?   @map("pdf_path") @db.VarChar(500)
+  qrSignature      String?   @map("qr_signature") @db.NVarChar(Max)
   createdAt        DateTime  @default(now()) @map("created_at") @db.DateTime
   updatedAt        DateTime  @updatedAt @map("updated_at") @db.DateTime
 
@@ -77,31 +72,10 @@ model Document {
   replies        Document[]           @relation("DocumentReplies")
   recipients     DocumentRecipient[]
   attachments    DocumentAttachment[]
-  signature      DigitalSignature?
 
   @@index([authorId])
   @@index([status])
-  @@index([referenceNumber])
   @@map("documents")
-}
-
-// ============================================
-// USER PERMISSIONS TABLE
-// ============================================
-model UserPermission {
-  id             Int      @id @default(autoincrement())
-  grantorUserId  Int      @map("grantor_user_id")
-  granteeUserId  Int      @map("grantee_user_id")
-  permissionType String   @map("permission_type") @db.VarChar(20)
-  pdfPassword    String?  @map("pdf_password") @db.VarChar(255)
-  createdAt      DateTime @default(now()) @map("created_at") @db.DateTime
-
-  // Relations
-  grantor User @relation("PermissionGrantor", fields: [grantorUserId], references: [id], onDelete: Cascade)
-  grantee User @relation("PermissionGrantee", fields: [granteeUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([grantorUserId, granteeUserId])
-  @@map("user_permissions")
 }
 
 // ============================================
@@ -110,7 +84,6 @@ model UserPermission {
 model DocumentRecipient {
   id          Int       @id @default(autoincrement())
   documentId  Int       @map("document_id")
-  senderId    Int       @map("sender_id")
   recipientId Int       @map("recipient_id")
   isRead      Boolean   @default(false) @map("is_read") @db.Bit
   readDate    DateTime? @map("read_date") @db.DateTime
@@ -118,7 +91,6 @@ model DocumentRecipient {
 
   // Relations
   document  Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  sender    User     @relation("DocumentSender", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   recipient User     @relation("DocumentRecipient", fields: [recipientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([documentId])
@@ -130,35 +102,15 @@ model DocumentRecipient {
 // DOCUMENT ATTACHMENTS TABLE
 // ============================================
 model DocumentAttachment {
-  id            Int      @id @default(autoincrement())
-  documentId    Int      @map("document_id")
-  fileName      String   @map("file_name") @db.VarChar(255)
-  filePath      String   @map("file_path") @db.VarChar(500)
-  fileSizeBytes BigInt?  @map("file_size_bytes")
-  createdAt     DateTime @default(now()) @map("created_at") @db.DateTime
+  id         Int      @id @default(autoincrement())
+  documentId Int      @map("document_id")
+  fileName   String   @map("file_name") @db.VarChar(255)
+  filePath   String   @map("file_path") @db.VarChar(500)
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime
 
   // Relations
   document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@index([documentId])
   @@map("document_attachments")
-}
-
-// ============================================
-// DIGITAL SIGNATURES TABLE
-// ============================================
-model DigitalSignature {
-  id            Int      @id @default(autoincrement())
-  documentId    Int      @unique @map("document_id")
-  userId        Int      @map("user_id")
-  qrCode        String   @map("qr_code") @db.NVarChar(Max)
-  documentHash  String   @map("document_hash") @db.VarChar(255)
-  signatureDate DateTime @default(now()) @map("signature_date") @db.DateTime
-
-  // Relations
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([documentId])
-  @@map("digital_signatures")
 }
