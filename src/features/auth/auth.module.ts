@@ -14,7 +14,6 @@ import { PasswordResetService } from './password-reset.service'
 import { AuthExceptionFilter } from './filters/auth-exception.filter'
 import { OptionalJwtGuard } from './guards/optional-jwt.guard'
 import { CustomConfigService } from '@/core/config/config.service'
-
 @Module({
   imports: [
     PassportModule,
@@ -23,14 +22,16 @@ import { CustomConfigService } from '@/core/config/config.service'
     EncryptionModule,
     JwtModule.registerAsync({
       useFactory: (configService: CustomConfigService): JwtModuleOptions => {
-        const expiresIn = configService.env.JWT_EXPIRATION || '7d'
+        const expiresIn = configService.env.JWT_EXPIRATION
         return {
-          secret: configService.env.JWT_SECRET!,
+          secret: configService.env.JWT_SECRET,
           signOptions: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             expiresIn: expiresIn as any,
           },
         }
       },
+      inject: [CustomConfigService],
     }),
   ],
   controllers: [AuthController],

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-microsoft'
 import type { Profile } from 'passport'
+import { CustomConfigService } from '@/core/config/config.service'
 
 interface MicrosoftProfileJson {
   mail?: string
@@ -26,17 +26,15 @@ interface MicrosoftUser {
 
 @Injectable()
 export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
-  constructor(private configService: ConfigService) {
-    const clientId = configService.get<string>('auth.microsoft.clientId')!
-    const clientSecret = configService.get<string>(
-      'auth.microsoft.clientSecret',
-    )!
-    const redirectUri = configService.get<string>('auth.microsoft.redirectUri')!
-    const tenantId = configService.get<string>('auth.microsoft.tenantId')!
+  constructor(private configService: CustomConfigService) {
+    const clientId = configService.env.MICROSOFT_CLIENT_ID
+    const clientSecret = configService.env.MICROSOFT_CLIENT_SECRET
+    const redirectUri = configService.env.MICROSOFT_REDIRECT_URI
+    const tenantId = configService.env.MICROSOFT_TENANT_ID
 
     super({
       clientID: clientId,
-      clientSecret: clientSecret,
+      clientSecret,
       callbackURL: redirectUri,
       scope: ['user.read', 'email', 'openid', 'profile'],
       tenant: tenantId || 'common',
@@ -64,7 +62,7 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
     }
 
     // Validar dominio si es single tenant
-    const tenantId = this.configService.get<string>('auth.microsoft.tenantId')
+    const tenantId = this.configService.env.MICROSOFT_TENANT_ID
     if (tenantId && tenantId !== 'common') {
       // Si es single tenant, validar que el email sea @uta.edu.ec
       if (!email.endsWith('@uta.edu.ec')) {
@@ -74,7 +72,7 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, 'microsoft') {
 
     const user: MicrosoftUser = {
       microsoftId: profile.id || '',
-      email: email,
+      email,
       name:
         profile.displayName ||
         profile._json?.displayName ||

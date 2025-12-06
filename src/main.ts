@@ -1,9 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { Logger, ValidationPipe, VersioningType } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { useContainer } from 'class-validator'
-import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
-import { GlobalExceptionFilter } from './shared/filters/all-exception.filter'
 import { CustomConfigService } from './core/config/config.service'
 import * as express from 'express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -28,8 +26,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   )
-  app.useGlobalInterceptors(app.get(ResponseInterceptor))
-  app.useGlobalFilters(new GlobalExceptionFilter())
+  // app.useGlobalInterceptors(app.get(ResponseInterceptor))
+  // app.useGlobalFilters(new GlobalExceptionFilter())
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
   const apiPrefix = configService.env.API_PREFIX

@@ -227,6 +227,7 @@ class MinHeap<T> {
   }
 
   private bubbleDown(index: number): void {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     while (true) {
       const leftChild = 2 * index + 1
       const rightChild = 2 * index + 2

@@ -85,6 +85,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expiresIn: expiresIn as any,
       }),
       user: {

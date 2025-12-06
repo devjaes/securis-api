@@ -51,6 +51,7 @@ export class TreeSerializer {
    * @returns The root HuffmanNode
    */
   jsonToTree(json: TreeJSON): HuffmanNode {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!json.root) {
       throw new Error('Invalid tree JSON: missing root node')
     }
@@ -104,8 +105,10 @@ export class TreeSerializer {
       typeof tree.version === 'string' &&
       typeof tree.createdAt === 'string' &&
       typeof tree.root === 'object' &&
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       tree.root !== null &&
       typeof tree.codeTable === 'object' &&
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       tree.codeTable !== null
     )
   }
