@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@modules/*": ["src/modules/*"],
+      "@modules/*": ["src/features/*"],
       "@common/*": ["src/common/*"],
       "@config/*": ["src/config/*"]
     }

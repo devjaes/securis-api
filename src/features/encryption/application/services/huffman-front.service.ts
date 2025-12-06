@@ -1,5 +1,4 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { HuffmanNode } from '../../domain'
 import { TreeFileLoaderAdapter } from '../../infrastructure'
 import { EncodeTextUseCase } from '../use-cases/encode-text.use-case'

@@ -21,6 +21,7 @@ export class OptionalJwtGuard extends AuthGuard('jwt') {
     const body = request.body
 
     // Si viene email e isFirstTime es true, no requiere JWT (primer seteo)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (body?.email && body?.isFirstTime === true) {
       // Guardar flag en el request para que el controlador sepa que es primer seteo
       request._isFirstTimePassword = true

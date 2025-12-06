@@ -146,6 +146,7 @@ export class FrequencyMap {
       '-': 15,
       _: 8,
       '"': 12,
+      // eslint-disable-next-line quotes
       "'": 10,
       '(': 8,
       ')': 8,

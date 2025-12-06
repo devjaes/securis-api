@@ -15,12 +15,8 @@ export class HealthController {
   // @Public()
   async checkDatabase() {
     // Verificar la conexión a la base de datos
-    await this.prisma.adminClient.$queryRaw`SELECT 1`
+    const result = await this.prisma.healthCheck()
 
-    return {
-      status: 'OK',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-    }
+    return result
   }
 }
