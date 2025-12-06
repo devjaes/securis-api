@@ -70,7 +70,7 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'users')
 BEGIN
     CREATE TABLE users (
         id INT PRIMARY KEY IDENTITY(1,1),
-        microsoft_id VARCHAR(255) UNIQUE,
+        microsoft_id VARCHAR(255),
         email VARCHAR(255) NOT NULL UNIQUE,
         name VARCHAR(255) NULL, -- ⭐ NULLABLE
         qr_signature VARCHAR(500),
@@ -107,7 +107,7 @@ BEGIN
         document_type VARCHAR(20) NOT NULL CHECK (document_type IN ('OFICIO', 'MEMORANDO')),
         category VARCHAR(20) NOT NULL CHECK (category IN ('NORMAL', 'CIFRADO')),
         status VARCHAR(20) NOT NULL DEFAULT 'BORRADOR' 
-            CHECK (status IN ('BORRADOR', 'EN_ELABORACION', 'ENVIADO', 'RECIBIDO', 'NO_ENVIADO')),
+            CHECK (status IN ('BORRADOR', 'EN_ELABORACION', 'ENVIADO', 'NO_ENVIADO')),
         subject VARCHAR(255) NOT NULL,
         body NVARCHAR(MAX) NOT NULL,
         author_id INT NOT NULL,

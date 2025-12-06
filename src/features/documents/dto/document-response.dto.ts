@@ -43,6 +43,51 @@ export class DocumentAttachmentResponseDto {
   createdAt: Date
 }
 
+export class DocumentRecipientResponseDto {
+  @ApiProperty({
+    description: 'ID del registro de recipient',
+    example: 1,
+    type: Number,
+  })
+  id: number
+
+  @ApiProperty({
+    description: 'ID del documento',
+    example: 1,
+    type: Number,
+  })
+  documentId: number
+
+  @ApiProperty({
+    description: 'ID del usuario receptor',
+    example: 2,
+    type: Number,
+  })
+  recipientId: number
+
+  @ApiProperty({
+    description: 'Indica si el documento ha sido leído',
+    example: false,
+    type: Boolean,
+  })
+  isRead: boolean
+
+  @ApiProperty({
+    description: 'Fecha de lectura del documento',
+    example: '2024-12-06T10:00:00Z',
+    type: Date,
+    required: false,
+  })
+  readDate?: Date | null
+
+  @ApiProperty({
+    description: 'Fecha de creación',
+    example: '2024-12-06T10:00:00Z',
+    type: Date,
+  })
+  createdAt: Date
+}
+
 export class DocumentResponseDto {
   @ApiProperty({
     description: 'ID del documento',
@@ -146,6 +191,13 @@ export class DocumentResponseDto {
     required: false,
   })
   attachments?: DocumentAttachmentResponseDto[]
+
+  @ApiProperty({
+    description: 'Destinatarios del documento',
+    type: [DocumentRecipientResponseDto],
+    required: false,
+  })
+  recipients?: DocumentRecipientResponseDto[]
 }
 
 export class CreateDocumentResponseDto {
@@ -154,12 +206,6 @@ export class CreateDocumentResponseDto {
     type: DocumentResponseDto,
   })
   document: DocumentResponseDto
-
-  @ApiProperty({
-    description: 'Adjuntos guardados',
-    type: [DocumentAttachmentResponseDto],
-  })
-  attachments: DocumentAttachmentResponseDto[]
 }
 
 export class GetDocumentsResponseDto {

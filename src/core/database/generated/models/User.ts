@@ -261,11 +261,11 @@ export type UserOrderByWithRelationInput = {
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  microsoftId?: string
   email?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
+  microsoftId?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   qrSignature?: Prisma.StringNullableFilter<"User"> | string | null
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
@@ -274,7 +274,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   documentsCreated?: Prisma.DocumentListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   documentsReceived?: Prisma.DocumentRecipientListRelationFilter
-}, "id" | "microsoftId" | "email">
+}, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

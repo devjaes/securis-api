@@ -8,16 +8,19 @@ import {
   Body,
   Param,
   Query,
+  Req,
   Res,
   ParseIntPipe,
   UseInterceptors,
   UploadedFiles,
+  UseGuards,
   HttpCode,
   HttpStatus,
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common'
-import type { Response } from 'express'
+import { AuthGuard } from '@nestjs/passport'
+import type { Request, Response } from 'express'
 import * as path from 'path'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import {
@@ -27,15 +30,25 @@ import {
   ApiConsumes,
   ApiBody,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger'
 import { DocumentsService } from './documents.service'
-import { CreateDocumentDto } from './dto/create-document.dto'
+import { CreateDocumentDto, DocumentStatus } from './dto/create-document.dto'
 import { UpdateDocumentDto } from './dto/update-document.dto'
 import {
   CreateDocumentResponseDto,
   GetDocumentsResponseDto,
   DocumentResponseDto,
 } from './dto/document-response.dto'
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string
+    email: string
+    name: string
+    microsoftId: string
+  }
+}
 
 @ApiTags('Documents')
 @Controller('documents')
@@ -68,13 +81,7 @@ export class DocumentsController {
         },
         status: {
           type: 'string',
-          enum: [
-            'BORRADOR',
-            'EN_ELABORACION',
-            'ENVIADO',
-            'RECIBIDO',
-            'NO_ENVIADO',
-          ],
+          enum: ['BORRADOR', 'EN_ELABORACION', 'ENVIADO', 'NO_ENVIADO'],
           example: 'BORRADOR',
         },
         subject: {
@@ -115,6 +122,16 @@ export class DocumentsController {
           },
           description: 'Archivos PDF adjuntos (máximo 10)',
         },
+        recipientEmails: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'email',
+          },
+          example: ['usuario1@uta.edu.ec', 'usuario2@uta.edu.ec'],
+          description:
+            'Lista de correos electrónicos de los destinatarios. Si el usuario no existe, se creará automáticamente',
+        },
       },
     },
   })
@@ -150,6 +167,8 @@ export class DocumentsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Obtiene todos los documentos',
@@ -164,13 +183,135 @@ export class DocumentsController {
     status: 400,
     description: 'Error al obtener los documentos',
   })
-  async getAllDocuments() {
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado',
+  })
+  async getAllDocuments(@Req() req: AuthenticatedRequest) {
     try {
-      const result = await this.documentsService.getAllDocuments()
+      const userId = parseInt(req.user?.id || '0', 10)
+      if (!userId) {
+        throw new BadRequestException('Usuario no autenticado')
+      }
+
+      const result = await this.documentsService.getAllDocuments(userId)
 
       return {
         success: true,
         message: 'Documentos obtenidos exitosamente',
+        data: result,
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? error.message
+          : 'Error al obtener los documentos',
+      )
+    }
+  }
+
+  @Get('status/recibido')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtiene documentos recibidos',
+    description:
+      'Retorna una lista de todos los documentos donde el usuario autenticado es receptor, buscando en la tabla document_recipients',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de documentos obtenida exitosamente',
+    type: GetDocumentsResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Error al obtener los documentos',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado',
+  })
+  async getDocumentsByRecibido(@Req() req: AuthenticatedRequest) {
+    try {
+      const userId = parseInt(req.user?.id || '0', 10)
+      if (!userId) {
+        throw new BadRequestException('Usuario no autenticado')
+      }
+
+      const result = await this.documentsService.getDocumentsByRecibido(userId)
+
+      return {
+        success: true,
+        message: 'Documentos recibidos obtenidos exitosamente',
+        data: result,
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? error.message
+          : 'Error al obtener los documentos',
+      )
+    }
+  }
+
+  @Get('status/:status')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtiene documentos por estado',
+    description:
+      'Retorna una lista de documentos filtrados por estado del usuario autenticado. Estados válidos: BORRADOR, EN_ELABORACION, ENVIADO, NO_ENVIADO',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de documentos obtenida exitosamente',
+    type: GetDocumentsResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Error: estado inválido o error al obtener los documentos',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado',
+  })
+  async getDocumentsByStatus(
+    @Param('status') status: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    try {
+      const userId = parseInt(req.user?.id || '0', 10)
+      if (!userId) {
+        throw new BadRequestException('Usuario no autenticado')
+      }
+
+      // Validar que el status sea uno de los permitidos
+      const validStatuses = [
+        DocumentStatus.BORRADOR,
+        DocumentStatus.EN_ELABORACION,
+        DocumentStatus.ENVIADO,
+        DocumentStatus.NO_ENVIADO,
+      ]
+
+      // Convertir el parámetro a mayúsculas para comparar
+      const upperStatus = status.toUpperCase()
+
+      if (!validStatuses.includes(upperStatus as DocumentStatus)) {
+        throw new BadRequestException(
+          `Estado inválido. Estados válidos: ${validStatuses.join(', ')}`,
+        )
+      }
+
+      const result = await this.documentsService.getDocumentsByStatus(
+        upperStatus as DocumentStatus,
+        userId,
+      )
+
+      return {
+        success: true,
+        message: `Documentos en estado ${upperStatus} obtenidos exitosamente`,
         data: result,
       }
     } catch (error) {

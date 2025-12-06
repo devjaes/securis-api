@@ -10,7 +10,11 @@ import * as path from 'path'
 import { HuffmanBackService } from '@/features/encryption/application/services/huffman-back.service'
 import { PdfService } from '@/providers/pdfs/pdf.service'
 import { DBService } from '@/core/database/database.service'
-import { CreateDocumentDto, DocumentCategory } from './dto/create-document.dto'
+import {
+  CreateDocumentDto,
+  DocumentCategory,
+  DocumentStatus,
+} from './dto/create-document.dto'
 import { UpdateDocumentDto } from './dto/update-document.dto'
 
 @Injectable()
@@ -39,9 +43,7 @@ export class DocumentsService {
       let processedBody = dto.html
       if (dto.category === DocumentCategory.CIFRADO) {
         // Cifrar el contenido HTML
-        console.log('dto.html', dto.html)
         processedBody = this.huffmanService.encode(dto.html)
-        console.log('processedBody', processedBody)
       }
 
       // Generar el PDF según la categoría
@@ -65,8 +67,6 @@ export class DocumentsService {
           subject: dto.subject,
         })
       }
-
-      console.log(dto)
 
       // Crear el documento en la base de datos
       const document = await prisma.document.create({
@@ -120,9 +120,56 @@ export class DocumentsService {
         }
       }
 
+      // Procesar recipients si se proporcionaron emails
+      const savedRecipients: Array<{
+        id: number
+        documentId: number
+        recipientId: number
+        isRead: boolean
+        readDate: Date | null
+        createdAt: Date
+      }> = []
+      if (dto.recipientEmails && dto.recipientEmails.length > 0) {
+        for (const email of dto.recipientEmails) {
+          // Verificar si el usuario existe
+          let user = await prisma.user.findUnique({
+            where: { email },
+          })
+
+          console.log(user)
+
+          // Si no existe, crear el usuario
+          if (!user) {
+            // Extraer nombre del email (parte antes del @) como nombre por defecto
+            const defaultName = email.split('@')[0] || 'Usuario'
+
+            console.log(defaultName)
+
+            user = await prisma.user.create({
+              data: {
+                email,
+                name: defaultName,
+                passwordHash: null,
+              },
+            })
+          }
+
+          // Crear el registro de recipient
+          const recipientRecord = await prisma.documentRecipient.create({
+            data: {
+              documentId: document.id,
+              recipientId: user.id,
+            },
+          })
+
+          savedRecipients.push(recipientRecord)
+        }
+      }
+
       return {
         document,
         attachments: savedAttachments,
+        recipients: savedRecipients,
       }
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -136,13 +183,17 @@ export class DocumentsService {
     }
   }
 
-  async getAllDocuments() {
+  async getAllDocuments(userId: number) {
     const prisma = this.databaseService.getAdminClient()
 
     try {
       const documents = await prisma.document.findMany({
+        where: {
+          authorId: userId,
+        },
         include: {
           attachments: true,
+          recipients: true,
         },
         orderBy: {
           createdAt: 'desc',
@@ -162,6 +213,75 @@ export class DocumentsService {
     }
   }
 
+  async getDocumentsByStatus(status: DocumentStatus, userId: number) {
+    const prisma = this.databaseService.getAdminClient()
+
+    try {
+      const documents = await prisma.document.findMany({
+        where: {
+          status,
+          authorId: userId,
+        },
+        include: {
+          attachments: true,
+          recipients: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+
+      return {
+        documents,
+        total: documents.length,
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? `Error al obtener los documentos en estado ${status}: ${error.message}`
+          : `Error al obtener los documentos en estado ${status}`,
+      )
+    }
+  }
+
+  async getDocumentsByRecibido(userId: number) {
+    const prisma = this.databaseService.getAdminClient()
+
+    try {
+      // Buscar primero en document_recipients por recipient_id
+      const documentRecipients = await prisma.documentRecipient.findMany({
+        where: {
+          recipientId: userId,
+        },
+        include: {
+          document: {
+            include: {
+              attachments: true,
+              recipients: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+
+      // Extraer los documentos de los registros de recipients
+      const documents = documentRecipients.map((dr) => dr.document)
+
+      return {
+        documents,
+        total: documents.length,
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? `Error al obtener los documentos recibidos: ${error.message}`
+          : 'Error al obtener los documentos recibidos',
+      )
+    }
+  }
+
   async getDocumentById(id: number) {
     const prisma = this.databaseService.getAdminClient()
 
@@ -170,6 +290,7 @@ export class DocumentsService {
         where: { id },
         include: {
           attachments: true,
+          recipients: true,
         },
       })
 
@@ -332,6 +453,7 @@ export class DocumentsService {
         data: updateData,
         include: {
           attachments: true,
+          recipients: true,
         },
       })
 

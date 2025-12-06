@@ -13,7 +13,7 @@ datasource db {
 // ============================================
 model User {
   id           Int      @id @default(autoincrement())
-  microsoftId  String?  @unique @map("microsoft_id") @db.VarChar(255)
+  microsoftId  String?  @map("microsoft_id") @db.VarChar(255)
   email        String   @unique @db.VarChar(255)
   name         String?  @db.VarChar(255)
   qrSignature  String?  @map("qr_signature") @db.VarChar(500)
