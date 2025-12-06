@@ -24,6 +24,10 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   )
   // app.useGlobalInterceptors(app.get(ResponseInterceptor))
@@ -37,23 +41,23 @@ async function bootstrap() {
   // })
   app.setGlobalPrefix(apiPrefix)
 
-  app.enableCors({
-    origin: (
-      origin: string | undefined,
-      callback: (err: Error | null, allow?: boolean) => void,
-    ) => {
-      const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173']
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    exposedHeaders: ['Content-Type'],
-  })
+  // app.enableCors({
+  //   origin: (
+  //     origin: string | undefined,
+  //     callback: (err: Error | null, allow?: boolean) => void,
+  //   ) => {
+  //     const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173']
+  //     if (!origin || allowedOrigins.includes(origin)) {
+  //       callback(null, true)
+  //     } else {
+  //       callback(new Error('Not allowed by CORS'))
+  //     }
+  //   },
+  //   credentials: true,
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  //   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  //   exposedHeaders: ['Content-Type'],
+  // })
 
   const config = new DocumentBuilder()
     .setTitle('Nest Prisma Base API')
