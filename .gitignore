@@ -1,67 +1,58 @@
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# Dependencies
-node_modules/
-pnpm-lock.yaml
-
-# Build outputs
-dist/
-build/
-*.tsbuildinfo
+# compiled output
+/dist
+/node_modules
+/build
 
 # Logs
-logs/
+logs
 *.log
 npm-debug.log*
 pnpm-debug.log*
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Uploads and temporary files
-uploads/
-temp/
-tmp/
-
-# Database
-*.sqlite
-*.db
-
-# Testing
-coverage/
-.nyc_output/
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # OS
 .DS_Store
-Thumbs.db
 
-# Uploads
-uploads/*
-!uploads/.gitkeep
+# Tests
+/coverage
+/.nyc_output
 
-# Database
-*.db
-*.sqlite
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Certificates
-*.pem
-*.key
-*.crt
-ssl/
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# Drizzle
-drizzle/
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
-# Huffman Trees (SECURITY: Never commit these files)
-src/features/encryption/trees/*.tree.json
+# temp directory
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+/generated/prisma

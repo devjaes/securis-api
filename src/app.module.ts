@@ -1,26 +1,18 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
-import configurations from './config';
-import { EncryptionModule } from './features/encryption';
-import { AuthModule } from './features/auth/auth.module';
-import { UsersModule } from './features/users/users.module';
+import { Module } from '@nestjs/common'
+import { CoreModule } from './core/core.module'
+import { HealthController } from './health.controller'
+import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: configurations,
-      envFilePath: '.env',
-    }),
-    DatabaseModule,
-    EncryptionModule,
-    UsersModule,
-    AuthModule,
+  imports: [CoreModule],
+  controllers: [HealthController],
+  providers: [
+    // ResponseInterceptor,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

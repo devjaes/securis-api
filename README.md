@@ -1,104 +1,108 @@
-# Securis API
+API desarrollada con NestJS 
 
-Backend API for secure document management system with multi-layer Huffman encryption.
+## Requisitos Previos
 
-## Features
+- **Node.js**: Versión 24 LTS
+- **pnpm**: Gestor de paquetes (instalar con `npm install -g pnpm`)
+- **Docker** y **Docker Compose**: Para la base de datos de desarrollo
 
-- 🔐 Multi-layer encryption (Frontend → Backend → Database)
-- 🔑 Microsoft Authentication integration
-- 📄 Document management (Oficios & Memorandos)
-- ✍️ Electronic signatures with QR codes
-- 🗄️ PostgreSQL with Drizzle ORM
-- 🔒 SSL/HTTPS support
+## Instalación
 
-## Tech Stack
-
-- **Framework:** NestJS 11
-- **Database:** PostgreSQL 16
-- **ORM:** Drizzle
-- **Authentication:** Passport JWT + Microsoft MSAL
-- **Encryption:** Custom Huffman implementation
-- **Runtime:** Node.js 20 LTS
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20.x LTS
-- pnpm 9.x
-- PostgreSQL 16
-- Docker (optional, recommended)
-
-### Installation
+1. Clonar el repositorio:
 
 ```bash
-# Install dependencies
+git clone <url-del-repositorio>
+```
+
+2. Instalar dependencias:
+
+```bash
 pnpm install
+```
 
-# Copy environment variables
+3. Crear el archivo de configuración `.env`:
+
+```bash
 cp .env.example .env
-
-# Edit .env with your configuration
-nano .env
 ```
 
-### Database Setup
+Edita el archivo `.env` y configura las siguientes variables de entorno según tu entorno local:
+
+- `PORT`: Puerto en el que correrá la aplicación (por defecto: 3000)
+- `DB_URL`: URL de conexión a la base de datos PostgreSQL
+- `JWT_SECRET`: Secret key para la firma de tokens JWT
+- `DB_PORT`: Puerto de PostgreSQL (usado por Docker Compose)
+- `DB_USER`: Usuario de PostgreSQL
+- `DB_PASSWORD`: Contraseña de PostgreSQL
+- `DB_NAME`: Nombre de la base de datos
+
+## Base de Datos
+
+### Levantar la base de datos con Docker
+
+Para desarrollo, la base de datos PostgreSQL se ejecuta en un contenedor Docker:
 
 ```bash
-# Generate migration
-pnpm db:generate
-
-# Run migration
-pnpm db:migrate
-
-# Or push schema directly (dev only)
-pnpm db:push
-
-# Open Drizzle Studio
-pnpm db:studio
+docker compose up -d
 ```
 
-### Running the Application
+Esto levantará un contenedor PostgreSQL con la configuración especificada en `docker-compose.yaml`.
+
+### Configurar la base de datos con Prisma
+
+Una vez que la base de datos esté corriendo, genera el esquema y aplica los cambios:
 
 ```bash
-# Development
-pnpm start:dev
+pnpm exec prisma db push
+```
 
-# Production build
+Este comando sincronizará el esquema de Prisma con la base de datos sin crear migraciones.
+
+### Semillar la base de datos
+
+Para poblar la base de datos con datos de ejemplo:
+
+```bash
+pnpm exec prisma db seed
+```
+
+## Comandos Disponibles
+
+### Desarrollo
+
+```bash
+pnpm dev
+```
+
+Inicia el servidor en modo desarrollo con recarga automática.
+
+### Producción
+
+```bash
 pnpm build
-pnpm start:prod
+pnpm prod
 ```
 
-The API will be available at: `http://localhost:3000/api`
+Compila el proyecto y lo ejecuta en modo producción.
 
-## Project Structure
+### Otros comandos útiles
 
-```
-src/
-├── config/              # Configuration files
-├── database/            # Database connection and schemas
-│   ├── schema/         # Drizzle schemas
-│   └── migrations/     # Database migrations
-├── modules/            # Feature modules
-├── common/             # Shared utilities
-└── main.ts             # Application entry point
+```bash
+pnpm lint          # Ejecuta el linter y corrige errores
+pnpm format        # Formatea el código con Prettier
+pnpm start         # Inicia el servidor (sin watch)
+pnpm debug         # Inicia el servidor en modo debug
 ```
 
-## Environment Variables
+## Estructura del Proyecto
 
-See `.env.example` for all required environment variables.
+- `src/`: Código fuente de la aplicación
+- `prisma/`: Esquema y migraciones de Prisma
+- `prisma/seed.ts`: Script de semillado de la base de datos
+- `docker-compose.yaml`: Configuración de Docker para desarrollo
 
-## Scripts
+## Notas
 
-- `pnpm start:dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm lint` - Run ESLint
-- `pnpm test` - Run tests
-- `pnpm db:generate` - Generate database migrations
-- `pnpm db:migrate` - Run migrations
-- `pnpm db:push` - Push schema to database
-- `pnpm db:studio` - Open Drizzle Studio
-
-## License
-
-MIT License - Copyright (c) 2025 devjaes
+- Asegúrate de que el contenedor de PostgreSQL esté corriendo antes de ejecutar comandos de Prisma
+- El archivo `.env` no debe ser commiteado al repositorio (está en `.gitignore`)
+- Para detener el contenedor de PostgreSQL: `docker-compose down`

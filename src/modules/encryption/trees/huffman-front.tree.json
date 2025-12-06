@@ -1,0 +1,1217 @@
+{
+  "version": "1.0",
+  "createdAt": "2025-11-30T19:25:41.336Z",
+  "root": {
+    "character": null,
+    "frequency": 2280,
+    "left": {
+      "character": null,
+      "frequency": 961,
+      "left": {
+        "character": null,
+        "frequency": 434,
+        "left": {
+          "character": null,
+          "frequency": 207,
+          "left": {
+            "character": null,
+            "frequency": 101,
+            "left": {
+              "character": "c",
+              "frequency": 50,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": null,
+              "frequency": 51,
+              "left": {
+                "character": "h",
+                "frequency": 25,
+                "left": null,
+                "right": null
+              },
+              "right": {
+                "character": "O",
+                "frequency": 26,
+                "left": null,
+                "right": null
+              }
+            }
+          },
+          "right": {
+            "character": null,
+            "frequency": 106,
+            "left": {
+              "character": "t",
+              "frequency": 53,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": null,
+              "frequency": 53,
+              "left": {
+                "character": null,
+                "frequency": 26,
+                "left": {
+                  "character": "ú",
+                  "frequency": 13,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": "U",
+                  "frequency": 13,
+                  "left": null,
+                  "right": null
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 27,
+                "left": {
+                  "character": "D",
+                  "frequency": 13,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 14,
+                  "left": {
+                    "character": "G",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "9",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "character": null,
+          "frequency": 227,
+          "left": {
+            "character": null,
+            "frequency": 111,
+            "left": {
+              "character": null,
+              "frequency": 54,
+              "left": {
+                "character": "g",
+                "frequency": 27,
+                "left": null,
+                "right": null
+              },
+              "right": {
+                "character": "é",
+                "frequency": 27,
+                "left": null,
+                "right": null
+              }
+            },
+            "right": {
+              "character": "d",
+              "frequency": 57,
+              "left": null,
+              "right": null
+            }
+          },
+          "right": {
+            "character": null,
+            "frequency": 116,
+            "left": {
+              "character": null,
+              "frequency": 57,
+              "left": {
+                "character": null,
+                "frequency": 28,
+                "left": {
+                  "character": null,
+                  "frequency": 14,
+                  "left": {
+                    "character": "8",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "Ó",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 14,
+                  "left": {
+                    "character": ")",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "$",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              },
+              "right": {
+                "character": ".",
+                "frequency": 29,
+                "left": null,
+                "right": null
+              }
+            },
+            "right": {
+              "character": null,
+              "frequency": 59,
+              "left": {
+                "character": null,
+                "frequency": 29,
+                "left": {
+                  "character": null,
+                  "frequency": 14,
+                  "left": {
+                    "character": null,
+                    "frequency": 7,
+                    "left": {
+                      "character": null,
+                      "frequency": 3,
+                      "left": {
+                        "character": "K",
+                        "frequency": 1,
+                        "left": null,
+                        "right": null
+                      },
+                      "right": {
+                        "character": "Ü",
+                        "frequency": 2,
+                        "left": null,
+                        "right": null
+                      }
+                    },
+                    "right": {
+                      "character": null,
+                      "frequency": 4,
+                      "left": {
+                        "character": "X",
+                        "frequency": 2,
+                        "left": null,
+                        "right": null
+                      },
+                      "right": {
+                        "character": "W",
+                        "frequency": 2,
+                        "left": null,
+                        "right": null
+                      }
+                    }
+                  },
+                  "right": {
+                    "character": ";",
+                    "frequency": 7,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": "í",
+                  "frequency": 15,
+                  "left": null,
+                  "right": null
+                }
+              },
+              "right": {
+                "character": "E",
+                "frequency": 30,
+                "left": null,
+                "right": null
+              }
+            }
+          }
+        }
+      },
+      "right": {
+        "character": null,
+        "frequency": 527,
+        "left": {
+          "character": null,
+          "frequency": 259,
+          "left": {
+            "character": null,
+            "frequency": 127,
+            "left": {
+              "character": null,
+              "frequency": 63,
+              "left": {
+                "character": "v",
+                "frequency": 31,
+                "left": null,
+                "right": null
+              },
+              "right": {
+                "character": null,
+                "frequency": 32,
+                "left": {
+                  "character": "-",
+                  "frequency": 16,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 16,
+                  "left": {
+                    "character": "B",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "7",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            },
+            "right": {
+              "character": null,
+              "frequency": 64,
+              "left": {
+                "character": null,
+                "frequency": 32,
+                "left": {
+                  "character": null,
+                  "frequency": 16,
+                  "left": {
+                    "character": null,
+                    "frequency": 8,
+                    "left": {
+                      "character": "[",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "&",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    }
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 8,
+                    "left": {
+                      "character": "Ñ",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "Q",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 16,
+                  "left": {
+                    "character": null,
+                    "frequency": 8,
+                    "left": {
+                      "character": "J",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "{",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    }
+                  },
+                  "right": {
+                    "character": "6",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 32,
+                "left": {
+                  "character": null,
+                  "frequency": 16,
+                  "left": {
+                    "character": "@",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "=",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": "R",
+                  "frequency": 16,
+                  "left": null,
+                  "right": null
+                }
+              }
+            }
+          },
+          "right": {
+            "character": null,
+            "frequency": 132,
+            "left": {
+              "character": "l",
+              "frequency": 66,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": null,
+              "frequency": 66,
+              "left": {
+                "character": null,
+                "frequency": 32,
+                "left": {
+                  "character": "j",
+                  "frequency": 16,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 16,
+                  "left": {
+                    "character": "_",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 8,
+                    "left": {
+                      "character": "]",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "}",
+                      "frequency": 4,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                }
+              },
+              "right": {
+                "character": ",",
+                "frequency": 34,
+                "left": null,
+                "right": null
+              }
+            }
+          }
+        },
+        "right": {
+          "character": null,
+          "frequency": 268,
+          "left": {
+            "character": "e",
+            "frequency": 133,
+            "left": null,
+            "right": null
+          },
+          "right": {
+            "character": null,
+            "frequency": 135,
+            "left": {
+              "character": "r",
+              "frequency": 67,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": null,
+              "frequency": 68,
+              "left": {
+                "character": null,
+                "frequency": 34,
+                "left": {
+                  "character": null,
+                  "frequency": 17,
+                  "left": {
+                    "character": "Á",
+                    "frequency": 8,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "V",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": "L",
+                  "frequency": 17,
+                  "left": null,
+                  "right": null
+                }
+              },
+              "right": {
+                "character": "A",
+                "frequency": 34,
+                "left": null,
+                "right": null
+              }
+            }
+          }
+        }
+      }
+    },
+    "right": {
+      "character": null,
+      "frequency": 1319,
+      "left": {
+        "character": null,
+        "frequency": 581,
+        "left": {
+          "character": null,
+          "frequency": 282,
+          "left": {
+            "character": null,
+            "frequency": 138,
+            "left": {
+              "character": "i",
+              "frequency": 69,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": "s",
+              "frequency": 69,
+              "left": null,
+              "right": null
+            }
+          },
+          "right": {
+            "character": null,
+            "frequency": 144,
+            "left": {
+              "character": null,
+              "frequency": 71,
+              "left": {
+                "character": "b",
+                "frequency": 35,
+                "left": null,
+                "right": null
+              },
+              "right": {
+                "character": null,
+                "frequency": 36,
+                "left": {
+                  "character": "ó",
+                  "frequency": 18,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 18,
+                  "left": {
+                    "character": "x",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "4",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            },
+            "right": {
+              "character": "n",
+              "frequency": 73,
+              "left": null,
+              "right": null
+            }
+          }
+        },
+        "right": {
+          "character": null,
+          "frequency": 299,
+          "left": {
+            "character": "a",
+            "frequency": 149,
+            "left": null,
+            "right": null
+          },
+          "right": {
+            "character": null,
+            "frequency": 150,
+            "left": {
+              "character": null,
+              "frequency": 74,
+              "left": {
+                "character": null,
+                "frequency": 36,
+                "left": {
+                  "character": null,
+                  "frequency": 18,
+                  "left": {
+                    "character": "(",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "5",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": "q",
+                  "frequency": 18,
+                  "left": null,
+                  "right": null
+                }
+              },
+              "right": {
+                "character": "p",
+                "frequency": 38,
+                "left": null,
+                "right": null
+              }
+            },
+            "right": {
+              "character": null,
+              "frequency": 76,
+              "left": {
+                "character": null,
+                "frequency": 38,
+                "left": {
+                  "character": "á",
+                  "frequency": 19,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": "N",
+                  "frequency": 19,
+                  "left": null,
+                  "right": null
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 38,
+                "left": {
+                  "character": null,
+                  "frequency": 19,
+                  "left": {
+                    "character": "ñ",
+                    "frequency": 9,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 10,
+                    "left": {
+                      "character": "ü",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "F",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                },
+                "right": {
+                  "character": "I",
+                  "frequency": 19,
+                  "left": null,
+                  "right": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "right": {
+        "character": null,
+        "frequency": 738,
+        "left": {
+          "character": null,
+          "frequency": 347,
+          "left": {
+            "character": null,
+            "frequency": 165,
+            "left": {
+              "character": null,
+              "frequency": 80,
+              "left": {
+                "character": null,
+                "frequency": 40,
+                "left": {
+                  "character": null,
+                  "frequency": 20,
+                  "left": {
+                    "character": ":",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "¡",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 20,
+                  "left": {
+                    "character": "É",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "3",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 40,
+                "left": {
+                  "character": null,
+                  "frequency": 20,
+                  "left": {
+                    "character": null,
+                    "frequency": 10,
+                    "left": {
+                      "character": "\\",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": ">",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    }
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 10,
+                    "left": {
+                      "character": "w",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "%",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 20,
+                  "left": {
+                    "character": "P",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "0",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            },
+            "right": {
+              "character": null,
+              "frequency": 85,
+              "left": {
+                "character": null,
+                "frequency": 41,
+                "left": {
+                  "character": null,
+                  "frequency": 20,
+                  "left": {
+                    "character": "'",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 10,
+                    "left": {
+                      "character": "\t",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "#",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 21,
+                  "left": {
+                    "character": "/",
+                    "frequency": 10,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "1",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 44,
+                "left": {
+                  "character": null,
+                  "frequency": 22,
+                  "left": {
+                    "character": "y",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "C",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": "S",
+                  "frequency": 22,
+                  "left": null,
+                  "right": null
+                }
+              }
+            }
+          },
+          "right": {
+            "character": null,
+            "frequency": 182,
+            "left": {
+              "character": null,
+              "frequency": 89,
+              "left": {
+                "character": null,
+                "frequency": 44,
+                "left": {
+                  "character": "\n",
+                  "frequency": 22,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 22,
+                  "left": {
+                    "character": null,
+                    "frequency": 11,
+                    "left": {
+                      "character": "<",
+                      "frequency": 5,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "H",
+                      "frequency": 6,
+                      "left": null,
+                      "right": null
+                    }
+                  },
+                  "right": {
+                    "character": "2",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              },
+              "right": {
+                "character": null,
+                "frequency": 45,
+                "left": {
+                  "character": null,
+                  "frequency": 22,
+                  "left": {
+                    "character": "?",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "!",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 23,
+                  "left": {
+                    "character": "M",
+                    "frequency": 11,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "¿",
+                    "frequency": 12,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            },
+            "right": {
+              "character": null,
+              "frequency": 93,
+              "left": {
+                "character": "m",
+                "frequency": 46,
+                "left": null,
+                "right": null
+              },
+              "right": {
+                "character": null,
+                "frequency": 47,
+                "left": {
+                  "character": "f",
+                  "frequency": 23,
+                  "left": null,
+                  "right": null
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 24,
+                  "left": {
+                    "character": "\"",
+                    "frequency": 12,
+                    "left": null,
+                    "right": null
+                  },
+                  "right": {
+                    "character": "z",
+                    "frequency": 12,
+                    "left": null,
+                    "right": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "character": null,
+          "frequency": 391,
+          "left": {
+            "character": null,
+            "frequency": 194,
+            "left": {
+              "character": "o",
+              "frequency": 96,
+              "left": null,
+              "right": null
+            },
+            "right": {
+              "character": null,
+              "frequency": 98,
+              "left": {
+                "character": null,
+                "frequency": 48,
+                "left": {
+                  "character": null,
+                  "frequency": 24,
+                  "left": {
+                    "character": null,
+                    "frequency": 12,
+                    "left": {
+                      "character": "Í",
+                      "frequency": 6,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": null,
+                      "frequency": 6,
+                      "left": {
+                        "character": "k",
+                        "frequency": 3,
+                        "left": null,
+                        "right": null
+                      },
+                      "right": {
+                        "character": "|",
+                        "frequency": 3,
+                        "left": null,
+                        "right": null
+                      }
+                    }
+                  },
+                  "right": {
+                    "character": "T",
+                    "frequency": 12,
+                    "left": null,
+                    "right": null
+                  }
+                },
+                "right": {
+                  "character": null,
+                  "frequency": 24,
+                  "left": {
+                    "character": null,
+                    "frequency": 12,
+                    "left": {
+                      "character": "Ú",
+                      "frequency": 6,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": null,
+                      "frequency": 6,
+                      "left": {
+                        "character": "Y",
+                        "frequency": 3,
+                        "left": null,
+                        "right": null
+                      },
+                      "right": {
+                        "character": "Z",
+                        "frequency": 3,
+                        "left": null,
+                        "right": null
+                      }
+                    }
+                  },
+                  "right": {
+                    "character": null,
+                    "frequency": 12,
+                    "left": {
+                      "character": "*",
+                      "frequency": 6,
+                      "left": null,
+                      "right": null
+                    },
+                    "right": {
+                      "character": "+",
+                      "frequency": 6,
+                      "left": null,
+                      "right": null
+                    }
+                  }
+                }
+              },
+              "right": {
+                "character": "u",
+                "frequency": 50,
+                "left": null,
+                "right": null
+              }
+            }
+          },
+          "right": {
+            "character": " ",
+            "frequency": 197,
+            "left": null,
+            "right": null
+          }
+        }
+      }
+    }
+  },
+  "codeTable": {
+    "0": "11000111",
+    "1": "11001011",
+    "2": "11010011",
+    "3": "11000011",
+    "4": "10010111",
+    "5": "10110001",
+    "6": "01001011",
+    "7": "01000111",
+    "8": "00110000",
+    "9": "00011111",
+    "c": "00000",
+    "h": "000010",
+    "O": "000011",
+    "t": "00010",
+    "ú": "0001100",
+    "U": "0001101",
+    "D": "0001110",
+    "G": "00011110",
+    "g": "001000",
+    "é": "001001",
+    "d": "00101",
+    "Ó": "00110001",
+    ")": "00110010",
+    "$": "00110011",
+    ".": "001101",
+    "K": "0011100000",
+    "Ü": "0011100001",
+    "X": "0011100010",
+    "W": "0011100011",
+    ";": "00111001",
+    "í": "0011101",
+    "E": "001111",
+    "v": "010000",
+    "-": "0100010",
+    "B": "01000110",
+    "[": "010010000",
+    "&": "010010001",
+    "Ñ": "010010010",
+    "Q": "010010011",
+    "J": "010010100",
+    "{": "010010101",
+    "@": "01001100",
+    "=": "01001101",
+    "R": "0100111",
+    "l": "01010",
+    "j": "0101100",
+    "_": "01011010",
+    "]": "010110110",
+    "}": "010110111",
+    ",": "010111",
+    "e": "0110",
+    "r": "01110",
+    "Á": "01111000",
+    "V": "01111001",
+    "L": "0111101",
+    "A": "011111",
+    "i": "10000",
+    "s": "10001",
+    "b": "100100",
+    "ó": "1001010",
+    "x": "10010110",
+    "n": "10011",
+    "a": "1010",
+    "(": "10110000",
+    "q": "1011001",
+    "p": "101101",
+    "á": "1011100",
+    "N": "1011101",
+    "ñ": "10111100",
+    "ü": "101111010",
+    "F": "101111011",
+    "I": "1011111",
+    ":": "11000000",
+    "¡": "11000001",
+    "É": "11000010",
+    "\\": "110001000",
+    ">": "110001001",
+    "w": "110001010",
+    "%": "110001011",
+    "P": "11000110",
+    "'": "11001000",
+    "\t": "110010010",
+    "#": "110010011",
+    "/": "11001010",
+    "y": "11001100",
+    "C": "11001101",
+    "S": "1100111",
+    "\n": "1101000",
+    "<": "110100100",
+    "H": "110100101",
+    "?": "11010100",
+    "!": "11010101",
+    "M": "11010110",
+    "¿": "11010111",
+    "m": "110110",
+    "f": "1101110",
+    "\"": "11011110",
+    "z": "11011111",
+    "o": "11100",
+    "Í": "111010000",
+    "k": "1110100010",
+    "|": "1110100011",
+    "T": "11101001",
+    "Ú": "111010100",
+    "Y": "1110101010",
+    "Z": "1110101011",
+    "*": "111010110",
+    "+": "111010111",
+    "u": "111011",
+    " ": "1111"
+  },
+  "metadata": {
+    "totalCharacters": 110,
+    "maxCodeLength": 10,
+    "minCodeLength": 4
+  }
+}

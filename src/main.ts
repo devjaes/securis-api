@@ -1,24 +1,43 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common'
+import { useContainer } from 'class-validator'
+import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
+import { GlobalExceptionFilter } from './shared/filters/all-exception.filter'
+import { CustomConfigService } from './core/config/config.service'
+import * as express from 'express'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { ApiPaginatedRes, ApiRes } from './shared/dtos/res/api-response.dto'
+import { BaseParamsReqDto } from './shared/dtos/req/base-params.dto'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true })
+  const configService = app.get(CustomConfigService)
+  const port = configService.env.PORT
 
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('app.port')!;
-  const apiPrefix = configService.get<string>('app.apiPrefix')!;
+  // Configurar límites de body para peticiones grandes
+  app.use(express.json({ limit: '50mb' }))
+  app.use(express.urlencoded({ limit: '50mb', extended: true }))
+  app.use(express.text({ limit: '50mb' }))
 
-  app.setGlobalPrefix(apiPrefix);
+  app.enableCors('*')
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true,
     }),
-  );
+  )
+  app.useGlobalInterceptors(app.get(ResponseInterceptor))
+  app.useGlobalFilters(new GlobalExceptionFilter())
+  useContainer(app.select(AppModule), { fallbackOnErrors: true })
+
+  const apiPrefix = configService.env.API_PREFIX;
+  // app.enableVersioning({
+  //   type: VersioningType.URI,
+  //   defaultVersion: '1',
+  // })
+  app.setGlobalPrefix(apiPrefix)
 
   app.enableCors({
     origin: (
@@ -38,8 +57,62 @@ async function bootstrap() {
     exposedHeaders: ['Content-Type'],
   });
 
-  await app.listen(port);
-  console.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);
+
+  const config = new DocumentBuilder()
+    .setTitle('Nest Prisma Base API')
+    .setDescription(
+      'Complete API documentation for Nest Prisma Base. This API is designed to provide a seamless experience for developers and users alike. It includes endpoints for authentication, user management and more.',
+    )
+    .setVersion('1.0')
+    .addServer(`http://localhost:${port}`, 'Local server')
+    // .addServer('https://api.produccion.com', 'Production server')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'JWT',
+      description: 'Enter your JWT token',
+      in: 'header',
+    })
+    .build()
+
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: [ApiRes, ApiPaginatedRes, BaseParamsReqDto],
+  })
+
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      docExpansion: 'none', // 'list', 'full', 'none'
+      operationsSorter: 'method', // 'alpha', 'method'
+      tagsSorter: 'alpha',
+      defaultModelsExpandDepth: 1,
+      defaultModelExpandDepth: 1,
+      filter: true,
+      syntaxHighlight: {
+        activate: true,
+        theme: 'agate',
+      },
+    },
+    customSiteTitle: 'EcuaTickets API Documentation',
+    // customfavIcon: 'https://nestjs.com/favicon.ico',
+    customCss: `
+        .swagger-ui .information-container { padding: 20px 0 }
+        .swagger-ui .scheme-container { padding: 15px 0 }
+      `,
+  })
+
+  await app.listen(port)
+
+  Logger.log(`Server running on port ${port}`, 'Bootstrap')
+  Logger.log(
+    `Swagger docs available at: http://localhost:${port}/api/docs`,
+    'Bootstrap',
+  )
+  Logger.log(
+    'API versioning enabled. Use /api/v1/ to access the API.',
+    'Bootstrap',
+  )
 }
 
-void bootstrap();
+void bootstrap()
