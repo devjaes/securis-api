@@ -5,6 +5,8 @@ import {
   IsInt,
   IsEnum,
   IsDateString,
+  IsEmail,
+  IsArray,
   MinLength,
   ValidateIf,
 } from 'class-validator'
@@ -25,7 +27,6 @@ export enum DocumentStatus {
   BORRADOR = 'BORRADOR',
   EN_ELABORACION = 'EN_ELABORACION',
   ENVIADO = 'ENVIADO',
-  RECIBIDO = 'RECIBIDO',
   NO_ENVIADO = 'NO_ENVIADO',
 }
 
@@ -155,4 +156,21 @@ export class CreateDocumentDto {
   @IsString({ message: 'La firma QR debe ser un texto' })
   @IsOptional()
   qrSignature?: string
+
+  @ApiProperty({
+    description: 'Lista de correos electrónicos de los destinatarios',
+    example: ['usuario1@uta.edu.ec', 'usuario2@uta.edu.ec'],
+    type: [String],
+    required: false,
+  })
+  @IsArray({ message: 'Los destinatarios deben ser un array' })
+  @IsEmail({}, { each: true, message: 'Cada correo debe ser válido' })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === '' || value === null || value === undefined) {
+      return undefined
+    }
+    return value.split(',').map((email) => email.trim())
+  })
+  recipientEmails?: string[]
 }
