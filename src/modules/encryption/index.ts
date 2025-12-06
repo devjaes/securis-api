@@ -1,11 +1,11 @@
 // Domain exports
-export * from './domain';
+export * from './domain'
 
 // Infrastructure exports
-export * from './infrastructure';
+export * from './infrastructure'
 
 // Application exports
-export * from './application';
+export * from './application'
 
 // Presentation exports
-export * from './presentation/encryption.module';
+export * from './presentation/encryption.module'

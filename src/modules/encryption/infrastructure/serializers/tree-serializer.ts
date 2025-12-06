@@ -1,4 +1,4 @@
-import { HuffmanNode, HuffmanNodeJSON } from '../../domain';
+import { HuffmanNode, HuffmanNodeJSON } from '../../domain'
 
 /**
  * Tree Serializer
@@ -25,7 +25,7 @@ export class TreeSerializer {
    * @returns JSON object with tree structure and code table
    */
   treeToJSON(root: HuffmanNode): TreeJSON {
-    const codeTable = this.buildCodeTable(root);
+    const codeTable = this.buildCodeTable(root)
 
     return {
       version: '1.0',
@@ -34,10 +34,14 @@ export class TreeSerializer {
       codeTable,
       metadata: {
         totalCharacters: Object.keys(codeTable).length,
-        maxCodeLength: Math.max(...Object.values(codeTable).map((c) => c.length)),
-        minCodeLength: Math.min(...Object.values(codeTable).map((c) => c.length)),
+        maxCodeLength: Math.max(
+          ...Object.values(codeTable).map((c) => c.length),
+        ),
+        minCodeLength: Math.min(
+          ...Object.values(codeTable).map((c) => c.length),
+        ),
       },
-    };
+    }
   }
 
   /**
@@ -48,10 +52,10 @@ export class TreeSerializer {
    */
   jsonToTree(json: TreeJSON): HuffmanNode {
     if (!json.root) {
-      throw new Error('Invalid tree JSON: missing root node');
+      throw new Error('Invalid tree JSON: missing root node')
     }
 
-    return HuffmanNode.fromJSON(json.root);
+    return HuffmanNode.fromJSON(json.root)
   }
 
   /**
@@ -62,25 +66,25 @@ export class TreeSerializer {
    * @returns Object mapping characters to their binary codes
    */
   buildCodeTable(root: HuffmanNode): Record<string, string> {
-    const codeTable: Record<string, string> = {};
+    const codeTable: Record<string, string> = {}
 
     const traverse = (node: HuffmanNode, code: string) => {
       if (node.isLeaf() && node.character !== null) {
-        codeTable[node.character] = code || '0'; // Single node tree edge case
-        return;
+        codeTable[node.character] = code || '0' // Single node tree edge case
+        return
       }
 
       if (node.left) {
-        traverse(node.left, code + '0');
+        traverse(node.left, code + '0')
       }
 
       if (node.right) {
-        traverse(node.right, code + '1');
+        traverse(node.right, code + '1')
       }
-    };
+    }
 
-    traverse(root, '');
-    return codeTable;
+    traverse(root, '')
+    return codeTable
   }
 
   /**
@@ -91,10 +95,10 @@ export class TreeSerializer {
    */
   isValidTreeJSON(json: unknown): json is TreeJSON {
     if (typeof json !== 'object' || json === null) {
-      return false;
+      return false
     }
 
-    const tree = json as TreeJSON;
+    const tree = json as TreeJSON
 
     return (
       typeof tree.version === 'string' &&
@@ -103,7 +107,7 @@ export class TreeSerializer {
       tree.root !== null &&
       typeof tree.codeTable === 'object' &&
       tree.codeTable !== null
-    );
+    )
   }
 
   /**
@@ -115,20 +119,31 @@ export class TreeSerializer {
    * @returns String representation of the tree
    */
   prettyPrint(root: HuffmanNode, prefix = '', isLeft = true): string {
-    let result = '';
+    let result = ''
 
     if (root.right) {
-      result += this.prettyPrint(root.right, prefix + (isLeft ? '│   ' : '    '), false);
+      result += this.prettyPrint(
+        root.right,
+        prefix + (isLeft ? '│   ' : '    '),
+        false,
+      )
     }
 
     result +=
-      prefix + (isLeft ? '└── ' : '┌── ') + (root.character || '∅') + ` (${root.frequency})\n`;
+      prefix +
+      (isLeft ? '└── ' : '┌── ') +
+      (root.character || '∅') +
+      ` (${root.frequency})\n`
 
     if (root.left) {
-      result += this.prettyPrint(root.left, prefix + (isLeft ? '    ' : '│   '), true);
+      result += this.prettyPrint(
+        root.left,
+        prefix + (isLeft ? '    ' : '│   '),
+        true,
+      )
     }
 
-    return result;
+    return result
   }
 }
 
@@ -136,13 +151,13 @@ export class TreeSerializer {
  * JSON structure for serialized Huffman tree
  */
 export interface TreeJSON {
-  version: string;
-  createdAt: string;
-  root: HuffmanNodeJSON;
-  codeTable: Record<string, string>;
+  version: string
+  createdAt: string
+  root: HuffmanNodeJSON
+  codeTable: Record<string, string>
   metadata: {
-    totalCharacters: number;
-    maxCodeLength: number;
-    minCodeLength: number;
-  };
+    totalCharacters: number
+    maxCodeLength: number
+    minCodeLength: number
+  }
 }

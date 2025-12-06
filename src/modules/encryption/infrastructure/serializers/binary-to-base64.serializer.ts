@@ -31,32 +31,32 @@ export class BinaryToBase64Serializer {
    */
   binaryToBase64(binaryString: string): string {
     if (!binaryString || binaryString.length === 0) {
-      throw new Error('Binary string cannot be empty');
+      throw new Error('Binary string cannot be empty')
     }
 
     if (!/^[01]+$/.test(binaryString)) {
-      throw new Error('Binary string must contain only 0s and 1s');
+      throw new Error('Binary string must contain only 0s and 1s')
     }
 
     // Calculate padding needed to reach byte boundary
-    const paddingLength = (8 - (binaryString.length % 8)) % 8;
-    const paddedBinary = binaryString + '0'.repeat(paddingLength);
+    const paddingLength = (8 - (binaryString.length % 8)) % 8
+    const paddedBinary = binaryString + '0'.repeat(paddingLength)
 
     // Convert binary to bytes
-    const bytes: number[] = [];
+    const bytes: number[] = []
 
     // First byte stores the padding length (0-7)
-    bytes.push(paddingLength);
+    bytes.push(paddingLength)
 
     // Convert each 8-bit chunk to a byte
     for (let i = 0; i < paddedBinary.length; i += 8) {
-      const byte = paddedBinary.substring(i, i + 8);
-      bytes.push(parseInt(byte, 2));
+      const byte = paddedBinary.substring(i, i + 8)
+      bytes.push(parseInt(byte, 2))
     }
 
     // Convert bytes to Base64
-    const buffer = Buffer.from(bytes);
-    return buffer.toString('base64');
+    const buffer = Buffer.from(bytes)
+    return buffer.toString('base64')
   }
 
   /**
@@ -72,42 +72,45 @@ export class BinaryToBase64Serializer {
    */
   base64ToBinary(base64String: string): string {
     if (!base64String || base64String.length === 0) {
-      throw new Error('Base64 string cannot be empty');
+      throw new Error('Base64 string cannot be empty')
     }
 
     try {
       // Decode Base64 to bytes
-      const buffer = Buffer.from(base64String, 'base64');
-      const bytes = Array.from(buffer);
+      const buffer = Buffer.from(base64String, 'base64')
+      const bytes = Array.from(buffer)
 
       if (bytes.length < 1) {
-        throw new Error('Invalid Base64 string: too short');
+        throw new Error('Invalid Base64 string: too short')
       }
 
       // First byte contains the padding length
-      const paddingLength = bytes[0];
+      const paddingLength = bytes[0]
 
       if (paddingLength > 7) {
-        throw new Error('Invalid padding length in encoded data');
+        throw new Error('Invalid padding length in encoded data')
       }
 
       // Convert remaining bytes to binary
-      let binaryString = '';
+      let binaryString = ''
       for (let i = 1; i < bytes.length; i++) {
-        const byte = bytes[i];
-        binaryString += byte.toString(2).padStart(8, '0');
+        const byte = bytes[i]
+        binaryString += byte.toString(2).padStart(8, '0')
       }
 
       // Remove padding from the end
       if (paddingLength > 0) {
-        binaryString = binaryString.substring(0, binaryString.length - paddingLength);
+        binaryString = binaryString.substring(
+          0,
+          binaryString.length - paddingLength,
+        )
       }
 
-      return binaryString;
+      return binaryString
     } catch (error) {
       throw new Error(
         `Failed to decode Base64: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      )
     }
   }
 
@@ -119,10 +122,10 @@ export class BinaryToBase64Serializer {
    */
   isValidBase64(str: string): boolean {
     try {
-      const decoded = Buffer.from(str, 'base64').toString('base64');
-      return decoded === str;
+      const decoded = Buffer.from(str, 'base64').toString('base64')
+      return decoded === str
     } catch {
-      return false;
+      return false
     }
   }
 
@@ -133,6 +136,6 @@ export class BinaryToBase64Serializer {
    * @returns true if valid binary, false otherwise
    */
   isValidBinary(str: string): boolean {
-    return /^[01]+$/.test(str);
+    return /^[01]+$/.test(str)
   }
 }

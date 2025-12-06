@@ -1,5 +1,5 @@
-import { HuffmanNode } from '../../domain';
-import { HuffmanEncoderAdapter } from '../../infrastructure';
+import { HuffmanNode } from '../../domain'
+import { HuffmanEncoderAdapter } from '../../infrastructure'
 
 /**
  * Encode Text Use Case
@@ -19,10 +19,10 @@ import { HuffmanEncoderAdapter } from '../../infrastructure';
  * ```
  */
 export class EncodeTextUseCase {
-  private readonly encoder: HuffmanEncoderAdapter;
+  private readonly encoder: HuffmanEncoderAdapter
 
   constructor(private readonly tree: HuffmanNode) {
-    this.encoder = new HuffmanEncoderAdapter(tree);
+    this.encoder = new HuffmanEncoderAdapter(tree)
   }
 
   /**
@@ -35,20 +35,20 @@ export class EncodeTextUseCase {
     try {
       // Validate input
       if (!input.text || input.text.trim().length === 0) {
-        throw new Error('Text cannot be empty');
+        throw new Error('Text cannot be empty')
       }
 
       // Check if text can be encoded
-      const unencodableChars = this.encoder.getUnencodableCharacters(input.text);
+      const unencodableChars = this.encoder.getUnencodableCharacters(input.text)
       if (unencodableChars.length > 0) {
         throw new Error(
           `Cannot encode text: the following characters are not supported: ${unencodableChars.join(', ')}`,
-        );
+        )
       }
 
       // Perform encoding
-      const encodedText = this.encoder.encode(input.text);
-      const stats = this.encoder.getEncodingStats(input.text);
+      const encodedText = this.encoder.encode(input.text)
+      const stats = this.encoder.getEncodingStats(input.text)
 
       return {
         success: true,
@@ -57,7 +57,7 @@ export class EncodeTextUseCase {
         encodedLength: encodedText.length,
         compressionRatio: stats.compressionRatio,
         spaceSavings: stats.spaceSavings,
-      };
+      }
     } catch (error) {
       return {
         success: false,
@@ -67,7 +67,7 @@ export class EncodeTextUseCase {
         compressionRatio: 0,
         spaceSavings: 0,
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      }
     }
   }
 
@@ -75,7 +75,7 @@ export class EncodeTextUseCase {
    * Validates if text can be encoded without actually encoding it
    */
   validate(text: string): EncodeValidationResult {
-    const unencodableChars = this.encoder.getUnencodableCharacters(text);
+    const unencodableChars = this.encoder.getUnencodableCharacters(text)
 
     return {
       canEncode: unencodableChars.length === 0,
@@ -84,26 +84,26 @@ export class EncodeTextUseCase {
         unencodableChars.length > 0
           ? `Cannot encode: characters not supported: ${unencodableChars.join(', ')}`
           : 'Text can be encoded successfully',
-    };
+    }
   }
 }
 
 export interface EncodeTextInput {
-  text: string;
+  text: string
 }
 
 export interface EncodeTextOutput {
-  success: boolean;
-  encodedText: string;
-  originalLength: number;
-  encodedLength: number;
-  compressionRatio: number;
-  spaceSavings: number;
-  error?: string;
+  success: boolean
+  encodedText: string
+  originalLength: number
+  encodedLength: number
+  compressionRatio: number
+  spaceSavings: number
+  error?: string
 }
 
 export interface EncodeValidationResult {
-  canEncode: boolean;
-  unencodableCharacters: string[];
-  message: string;
+  canEncode: boolean
+  unencodableCharacters: string[]
+  message: string
 }

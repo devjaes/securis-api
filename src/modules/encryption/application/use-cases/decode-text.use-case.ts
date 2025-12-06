@@ -1,5 +1,5 @@
-import { HuffmanNode } from '../../domain';
-import { HuffmanDecoderAdapter } from '../../infrastructure';
+import { HuffmanNode } from '../../domain'
+import { HuffmanDecoderAdapter } from '../../infrastructure'
 
 /**
  * Decode Text Use Case
@@ -19,10 +19,10 @@ import { HuffmanDecoderAdapter } from '../../infrastructure';
  * ```
  */
 export class DecodeTextUseCase {
-  private readonly decoder: HuffmanDecoderAdapter;
+  private readonly decoder: HuffmanDecoderAdapter
 
   constructor(private readonly tree: HuffmanNode) {
-    this.decoder = new HuffmanDecoderAdapter(tree);
+    this.decoder = new HuffmanDecoderAdapter(tree)
   }
 
   /**
@@ -35,12 +35,12 @@ export class DecodeTextUseCase {
     try {
       // Validate input
       if (!input.encodedText || input.encodedText.trim().length === 0) {
-        throw new Error('Encoded text cannot be empty');
+        throw new Error('Encoded text cannot be empty')
       }
 
       // Perform decoding
-      const decodedText = this.decoder.decode(input.encodedText);
-      const stats = this.decoder.getDecodingStats(input.encodedText);
+      const decodedText = this.decoder.decode(input.encodedText)
+      const stats = this.decoder.getDecodingStats(input.encodedText)
 
       return {
         success: true,
@@ -49,7 +49,7 @@ export class DecodeTextUseCase {
         decodedLength: decodedText.length,
         compressionRatio: stats.compressionRatio,
         spaceSavings: stats.spaceSavings,
-      };
+      }
     } catch (error) {
       return {
         success: false,
@@ -59,7 +59,7 @@ export class DecodeTextUseCase {
         compressionRatio: 0,
         spaceSavings: 0,
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      }
     }
   }
 
@@ -67,30 +67,32 @@ export class DecodeTextUseCase {
    * Validates if encoded text can be decoded without actually decoding it
    */
   validate(encodedText: string): DecodeValidationResult {
-    const canDecode = this.decoder.canDecode(encodedText);
+    const canDecode = this.decoder.canDecode(encodedText)
 
     return {
       canDecode,
-      message: canDecode ? 'Text can be decoded successfully' : 'Invalid or corrupted encoded text',
-    };
+      message: canDecode
+        ? 'Text can be decoded successfully'
+        : 'Invalid or corrupted encoded text',
+    }
   }
 }
 
 export interface DecodeTextInput {
-  encodedText: string;
+  encodedText: string
 }
 
 export interface DecodeTextOutput {
-  success: boolean;
-  decodedText: string;
-  encodedLength: number;
-  decodedLength: number;
-  compressionRatio: number;
-  spaceSavings: number;
-  error?: string;
+  success: boolean
+  decodedText: string
+  encodedLength: number
+  decodedLength: number
+  compressionRatio: number
+  spaceSavings: number
+  error?: string
 }
 
 export interface DecodeValidationResult {
-  canDecode: boolean;
-  message: string;
+  canDecode: boolean
+  message: string
 }

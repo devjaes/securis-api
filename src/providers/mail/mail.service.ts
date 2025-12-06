@@ -1,19 +1,18 @@
-import { CustomConfigService } from '@/core/config/config.service';
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
-
+import { CustomConfigService } from '@/core/config/config.service'
+import { Injectable } from '@nestjs/common'
+import * as nodemailer from 'nodemailer'
+import type { Transporter } from 'nodemailer'
 
 @Injectable()
 export class MailService {
-  private transporter: Transporter;
+  private transporter: Transporter
 
   constructor(private configService: CustomConfigService) {
-    const mailHost = this.configService.env.MAIL_HOST;
-    const mailPort = this.configService.env.MAIL_PORT;
-    const mailSecure = this.configService.env.MAIL_SECURE;
-    const mailUser = this.configService.env.MAIL_USER;
-    const mailPass = this.configService.env.MAIL_PASS;
+    const mailHost = this.configService.env.MAIL_HOST
+    const mailPort = this.configService.env.MAIL_PORT
+    const mailSecure = this.configService.env.MAIL_SECURE
+    const mailUser = this.configService.env.MAIL_USER
+    const mailPass = this.configService.env.MAIL_PASS
 
     this.transporter = nodemailer.createTransport({
       host: mailHost,
@@ -23,15 +22,18 @@ export class MailService {
         user: mailUser,
         pass: mailPass,
       },
-    });
+    })
   }
 
-  async sendPasswordResetEmail(email: string, resetToken: string): Promise<void> {
-    const frontendUrl = this.configService.env.FRONTEND_URL;
-    const from = this.configService.env.MAIL_FROM;
+  async sendPasswordResetEmail(
+    email: string,
+    resetToken: string,
+  ): Promise<void> {
+    const frontendUrl = this.configService.env.FRONTEND_URL
+    const from = this.configService.env.MAIL_FROM
 
     // El token viene cifrado, lo enviamos en el link
-    const resetUrl = `${frontendUrl}/auth/reset-password?token=${encodeURIComponent(resetToken)}`;
+    const resetUrl = `${frontendUrl}/auth/reset-password?token=${encodeURIComponent(resetToken)}`
 
     const mailOptions = {
       from: `Securis <${from}>`,
@@ -88,8 +90,8 @@ export class MailService {
         
         Si no solicitaste este cambio, por favor ignora este correo.
       `,
-    };
+    }
 
-    await this.transporter.sendMail(mailOptions);
+    await this.transporter.sendMail(mailOptions)
   }
 }

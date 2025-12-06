@@ -17,10 +17,10 @@
  * ```
  */
 export class FrequencyMap {
-  private readonly frequencies: Map<string, number>;
+  private readonly frequencies: Map<string, number>
 
   private constructor(frequencies: Map<string, number>) {
-    this.frequencies = new Map(frequencies);
+    this.frequencies = new Map(frequencies)
   }
 
   /**
@@ -28,30 +28,30 @@ export class FrequencyMap {
    * Analyzes the text and counts character occurrences
    */
   static fromText(text: string): FrequencyMap {
-    const frequencies = new Map<string, number>();
+    const frequencies = new Map<string, number>()
 
     for (const char of text) {
-      frequencies.set(char, (frequencies.get(char) || 0) + 1);
+      frequencies.set(char, (frequencies.get(char) || 0) + 1)
     }
 
     if (frequencies.size === 0) {
-      throw new Error('Cannot create FrequencyMap from empty text');
+      throw new Error('Cannot create FrequencyMap from empty text')
     }
 
-    return new FrequencyMap(frequencies);
+    return new FrequencyMap(frequencies)
   }
 
   /**
    * Creates a FrequencyMap from a pre-computed frequency object
    */
   static fromObject(obj: Record<string, number>): FrequencyMap {
-    const frequencies = new Map<string, number>(Object.entries(obj));
+    const frequencies = new Map<string, number>(Object.entries(obj))
 
     if (frequencies.size === 0) {
-      throw new Error('Cannot create FrequencyMap from empty object');
+      throw new Error('Cannot create FrequencyMap from empty object')
     }
 
-    return new FrequencyMap(frequencies);
+    return new FrequencyMap(frequencies)
   }
 
   /**
@@ -180,67 +180,67 @@ export class FrequencyMap {
       ']': 4,
       '{': 4,
       '}': 4,
-    };
+    }
 
-    return FrequencyMap.fromObject(defaultFrequencies);
+    return FrequencyMap.fromObject(defaultFrequencies)
   }
 
   /**
    * Gets the frequency of a specific character
    */
   getFrequency(char: string): number {
-    return this.frequencies.get(char) || 0;
+    return this.frequencies.get(char) || 0
   }
 
   /**
    * Gets all unique characters
    */
   getCharacters(): string[] {
-    return Array.from(this.frequencies.keys());
+    return Array.from(this.frequencies.keys())
   }
 
   /**
    * Gets the total number of unique characters
    */
   getSize(): number {
-    return this.frequencies.size;
+    return this.frequencies.size
   }
 
   /**
    * Gets the most frequent character
    */
   getMostFrequent(): string | null {
-    let maxChar: string | null = null;
-    let maxFreq = 0;
+    let maxChar: string | null = null
+    let maxFreq = 0
 
     for (const [char, freq] of this.frequencies.entries()) {
       if (freq > maxFreq) {
-        maxFreq = freq;
-        maxChar = char;
+        maxFreq = freq
+        maxChar = char
       }
     }
 
-    return maxChar;
+    return maxChar
   }
 
   /**
    * Converts the frequency map to a plain object
    */
   toObject(): Record<string, number> {
-    return Object.fromEntries(this.frequencies);
+    return Object.fromEntries(this.frequencies)
   }
 
   /**
    * Gets all entries as an array of [character, frequency] pairs
    */
   getEntries(): Array<[string, number]> {
-    return Array.from(this.frequencies.entries());
+    return Array.from(this.frequencies.entries())
   }
 
   /**
    * Creates a copy of this FrequencyMap
    */
   clone(): FrequencyMap {
-    return new FrequencyMap(this.frequencies);
+    return new FrequencyMap(this.frequencies)
   }
 }

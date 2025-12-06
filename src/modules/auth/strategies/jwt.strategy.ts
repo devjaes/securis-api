@@ -1,13 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { PassportStrategy } from '@nestjs/passport'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
 export interface JwtPayload {
-  sub: string;
-  email: string;
-  name: string;
-  microsoftId: string;
+  sub: string
+  email: string
+  name: string
+  microsoftId: string
 }
 
 @Injectable()
@@ -17,12 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('auth.jwt.secret')!,
-    });
+    })
   }
 
   validate(payload: JwtPayload) {
     if (!payload.sub || !payload.email) {
-      throw new UnauthorizedException('Invalid token payload');
+      throw new UnauthorizedException('Invalid token payload')
     }
 
     return {
@@ -30,6 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       email: payload.email,
       name: payload.name,
       microsoftId: payload.microsoftId,
-    };
+    }
   }
 }

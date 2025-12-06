@@ -1,6 +1,6 @@
-import { Injectable, NestMiddleware, BadRequestException } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { HuffmanFrontService } from '../../application/services/huffman-front.service';
+import { Injectable, NestMiddleware, BadRequestException } from '@nestjs/common'
+import { Request, Response, NextFunction } from 'express'
+import { HuffmanFrontService } from '../../application/services/huffman-front.service'
 
 /**
  * Decryption Middleware
@@ -16,21 +16,21 @@ export class DecryptionMiddleware implements NestMiddleware {
 
   use(req: Request, _res: Response, next: NextFunction) {
     if (!['POST', 'PUT', 'PATCH'].includes(req.method)) {
-      return next();
+      return next()
     }
 
-    const body = req.body as { payload?: string } | undefined;
+    const body = req.body as { payload?: string } | undefined
     if (!body?.payload) {
-      return next();
+      return next()
     }
 
     try {
-      const decoded = this.huffmanFront.decode(body.payload);
-      req.body = JSON.parse(decoded) as Record<string, unknown>;
-      next();
+      const decoded = this.huffmanFront.decode(body.payload)
+      req.body = JSON.parse(decoded) as Record<string, unknown>
+      next()
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new BadRequestException(`Failed to decode payload: ${message}`);
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      throw new BadRequestException(`Failed to decode payload: ${message}`)
     }
   }
 }

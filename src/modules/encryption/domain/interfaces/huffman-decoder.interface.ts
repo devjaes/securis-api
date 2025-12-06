@@ -22,7 +22,7 @@ export interface IHuffmanDecoder {
    * // Returns: "Hello World"
    * ```
    */
-  decode(encodedText: string): string;
+  decode(encodedText: string): string
 
   /**
    * Decodes from binary string (intermediate format)
@@ -33,7 +33,7 @@ export interface IHuffmanDecoder {
    *
    * @throws {Error} If the binary string doesn't represent a valid encoding
    */
-  decodeFromBinary(binaryString: string): string;
+  decodeFromBinary(binaryString: string): string
 
   /**
    * Validates if the encoded text can be decoded
@@ -41,5 +41,5 @@ export interface IHuffmanDecoder {
    * @param encodedText - The Base64-encoded text to validate
    * @returns true if the text appears to be valid, false otherwise
    */
-  canDecode(encodedText: string): boolean;
+  canDecode(encodedText: string): boolean
 }

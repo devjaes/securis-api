@@ -1,7 +1,11 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { HuffmanBackService, HuffmanDbService, HuffmanFrontService } from '../application';
-import { EncryptionController } from './encryption.controller';
-import { DecryptionMiddleware } from './middleware/decryption.middleware';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
+import {
+  HuffmanBackService,
+  HuffmanDbService,
+  HuffmanFrontService,
+} from '../application'
+import { EncryptionController } from './encryption.controller'
+import { DecryptionMiddleware } from './middleware/decryption.middleware'
 
 /**
  * Encryption Module
@@ -16,6 +20,6 @@ import { DecryptionMiddleware } from './middleware/decryption.middleware';
 })
 export class EncryptionModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DecryptionMiddleware).forRoutes('*');
+    consumer.apply(DecryptionMiddleware).forRoutes('*')
   }
 }

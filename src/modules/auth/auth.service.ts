@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { DBService } from '../../core/database/database.service';
-import { CustomConfigService } from '../../core/config/config.service';
-import type { User } from '../../core/database/generated/client';
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { DBService } from '../../core/database/database.service'
+import { CustomConfigService } from '../../core/config/config.service'
+import type { User } from '../../core/database/generated/client'
 
 export interface MicrosoftUser {
-  microsoftId: string;
-  email: string;
-  name: string;
-  accessToken?: string;
-  refreshToken?: string;
-  profile?: Record<string, unknown>;
+  microsoftId: string
+  email: string
+  name: string
+  accessToken?: string
+  refreshToken?: string
+  profile?: Record<string, unknown>
 }
 
 @Injectable()
@@ -30,31 +30,34 @@ export class AuthService {
    * @throws Error si el usuario no existe en la base de datos
    */
   async findAndUpdateUser(microsoftUser: MicrosoftUser): Promise<User> {
-    const prisma = this.dbService.getAdminClient();
+    const prisma = this.dbService.getAdminClient()
 
     // Buscar usuario por email (el admin crea usuarios solo con email)
     const existingUser = await prisma.user.findUnique({
       where: { email: microsoftUser.email },
-    });
+    })
 
     if (!existingUser) {
-      throw new Error('USER_NOT_REGISTERED');
+      throw new Error('USER_NOT_REGISTERED')
     }
 
     // Actualizar datos de Microsoft (microsoftId, name, etc.)
     const updateData: {
-      microsoftId?: string;
-      name?: string;
-    } = {};
+      microsoftId?: string
+      name?: string
+    } = {}
 
     // Actualizar microsoftId si no existe o es diferente
-    if (!existingUser.microsoftId || existingUser.microsoftId !== microsoftUser.microsoftId) {
-      updateData.microsoftId = microsoftUser.microsoftId;
+    if (
+      !existingUser.microsoftId ||
+      existingUser.microsoftId !== microsoftUser.microsoftId
+    ) {
+      updateData.microsoftId = microsoftUser.microsoftId
     }
 
     // Actualizar nombre si es diferente
     if (existingUser.name !== microsoftUser.name) {
-      updateData.name = microsoftUser.name;
+      updateData.name = microsoftUser.name
     }
 
     // Solo actualizar si hay cambios
@@ -62,12 +65,12 @@ export class AuthService {
       const updatedUser = await prisma.user.update({
         where: { id: existingUser.id },
         data: updateData,
-      });
+      })
 
-      return updatedUser;
+      return updatedUser
     }
 
-    return existingUser;
+    return existingUser
   }
 
   generateJwtToken(user: User) {
@@ -76,9 +79,9 @@ export class AuthService {
       email: user.email,
       name: user.name,
       microsoftId: user.microsoftId,
-    };
+    }
 
-    const expiresIn = this.configService.env.JWT_EXPIRATION || '7d';
+    const expiresIn = this.configService.env.JWT_EXPIRATION || '7d'
 
     return {
       access_token: this.jwtService.sign(payload, {
@@ -90,6 +93,6 @@ export class AuthService {
         name: user.name,
         microsoftId: user.microsoftId,
       },
-    };
+    }
   }
 }

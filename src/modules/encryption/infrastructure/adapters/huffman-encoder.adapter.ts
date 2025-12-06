@@ -1,7 +1,7 @@
-import { IHuffmanEncoder } from '../../domain';
-import { HuffmanNode } from '../../domain/entities/huffman-node.entity';
-import { BinaryToBase64Serializer } from '../serializers/binary-to-base64.serializer';
-import { TreeSerializer } from '../serializers/tree-serializer';
+import { IHuffmanEncoder } from '../../domain'
+import { HuffmanNode } from '../../domain/entities/huffman-node.entity'
+import { BinaryToBase64Serializer } from '../serializers/binary-to-base64.serializer'
+import { TreeSerializer } from '../serializers/tree-serializer'
 
 /**
  * Huffman Encoder Adapter
@@ -27,23 +27,23 @@ import { TreeSerializer } from '../serializers/tree-serializer';
  * ```
  */
 export class HuffmanEncoderAdapter implements IHuffmanEncoder {
-  private readonly codeTable: Record<string, string>;
-  private readonly serializer: BinaryToBase64Serializer;
+  private readonly codeTable: Record<string, string>
+  private readonly serializer: BinaryToBase64Serializer
 
   /**
    * @param tree - The Huffman tree root node to use for encoding
    */
   constructor(private readonly tree: HuffmanNode) {
-    const treeSerializer = new TreeSerializer();
+    const treeSerializer = new TreeSerializer()
 
     // Special case: single-node tree
     if (tree.isLeaf()) {
-      this.codeTable = tree.character ? { [tree.character]: '0' } : {};
+      this.codeTable = tree.character ? { [tree.character]: '0' } : {}
     } else {
-      this.codeTable = treeSerializer.buildCodeTable(tree);
+      this.codeTable = treeSerializer.buildCodeTable(tree)
     }
 
-    this.serializer = new BinaryToBase64Serializer();
+    this.serializer = new BinaryToBase64Serializer()
   }
 
   /**
@@ -51,11 +51,11 @@ export class HuffmanEncoderAdapter implements IHuffmanEncoder {
    */
   encode(text: string): string {
     if (!text || text.length === 0) {
-      throw new Error('Cannot encode empty text');
+      throw new Error('Cannot encode empty text')
     }
 
-    const binaryString = this.encodeToBinary(text);
-    return this.serializer.binaryToBase64(binaryString);
+    const binaryString = this.encodeToBinary(text)
+    return this.serializer.binaryToBase64(binaryString)
   }
 
   /**
@@ -63,49 +63,51 @@ export class HuffmanEncoderAdapter implements IHuffmanEncoder {
    */
   encodeToBinary(text: string): string {
     if (!text || text.length === 0) {
-      throw new Error('Cannot encode empty text');
+      throw new Error('Cannot encode empty text')
     }
 
     // Check if all characters can be encoded
-    const unencodable = this.getUnencodableCharacters(text);
+    const unencodable = this.getUnencodableCharacters(text)
     if (unencodable.length > 0) {
-      throw new Error(`Cannot encode text: characters not in tree: ${unencodable.join(', ')}`);
+      throw new Error(
+        `Cannot encode text: characters not in tree: ${unencodable.join(', ')}`,
+      )
     }
 
-    let binaryString = '';
+    let binaryString = ''
 
     for (const char of text) {
-      const code = this.codeTable[char];
+      const code = this.codeTable[char]
       if (!code) {
-        throw new Error(`Character '${char}' not found in Huffman tree`);
+        throw new Error(`Character '${char}' not found in Huffman tree`)
       }
-      binaryString += code;
+      binaryString += code
     }
 
-    return binaryString;
+    return binaryString
   }
 
   /**
    * Checks if text can be encoded with current tree
    */
   canEncode(text: string): boolean {
-    return this.getUnencodableCharacters(text).length === 0;
+    return this.getUnencodableCharacters(text).length === 0
   }
 
   /**
    * Gets characters that cannot be encoded
    */
   getUnencodableCharacters(text: string): string[] {
-    const uniqueChars = new Set<string>(text);
-    const unencodable: string[] = [];
+    const uniqueChars = new Set<string>(text)
+    const unencodable: string[] = []
 
     for (const char of uniqueChars) {
       if (!this.codeTable[char]) {
-        unencodable.push(char);
+        unencodable.push(char)
       }
     }
 
-    return unencodable;
+    return unencodable
   }
 
   /**
@@ -113,20 +115,20 @@ export class HuffmanEncoderAdapter implements IHuffmanEncoder {
    * Useful for debugging
    */
   getCodeTable(): Readonly<Record<string, string>> {
-    return { ...this.codeTable };
+    return { ...this.codeTable }
   }
 
   /**
    * Gets encoding statistics for a text
    */
   getEncodingStats(text: string): EncodingStats {
-    const originalBits = text.length * 16; // UTF-16 uses 2 bytes per char
-    const binaryString = this.encodeToBinary(text);
-    const compressedBits = binaryString.length;
+    const originalBits = text.length * 16 // UTF-16 uses 2 bytes per char
+    const binaryString = this.encodeToBinary(text)
+    const compressedBits = binaryString.length
 
     // After Base64 encoding, each 6 bits becomes 8 bits (1 character)
-    const base64Length = Math.ceil(compressedBits / 6);
-    const base64Bits = base64Length * 8;
+    const base64Length = Math.ceil(compressedBits / 6)
+    const base64Bits = base64Length * 8
 
     return {
       originalLength: text.length,
@@ -135,7 +137,7 @@ export class HuffmanEncoderAdapter implements IHuffmanEncoder {
       base64Bits,
       compressionRatio: compressedBits / originalBits,
       spaceSavings: ((originalBits - compressedBits) / originalBits) * 100,
-    };
+    }
   }
 }
 
@@ -143,10 +145,10 @@ export class HuffmanEncoderAdapter implements IHuffmanEncoder {
  * Encoding statistics
  */
 export interface EncodingStats {
-  originalLength: number;
-  originalBits: number;
-  compressedBits: number;
-  base64Bits: number;
-  compressionRatio: number;
-  spaceSavings: number;
+  originalLength: number
+  originalBits: number
+  compressedBits: number
+  base64Bits: number
+  compressionRatio: number
+  spaceSavings: number
 }

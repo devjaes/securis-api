@@ -1,10 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { HuffmanNode } from '../../domain';
-import { TreeFileLoaderAdapter } from '../../infrastructure';
-import { EncodeTextUseCase } from '../use-cases/encode-text.use-case';
-import { DecodeTextUseCase } from '../use-cases/decode-text.use-case';
-import { CustomConfigService } from '@/core/config/config.service';
+import { Injectable, OnModuleInit } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { HuffmanNode } from '../../domain'
+import { TreeFileLoaderAdapter } from '../../infrastructure'
+import { EncodeTextUseCase } from '../use-cases/encode-text.use-case'
+import { DecodeTextUseCase } from '../use-cases/decode-text.use-case'
+import { CustomConfigService } from '@/core/config/config.service'
 
 /**
  * Huffman Frontend Service
@@ -13,57 +13,62 @@ import { CustomConfigService } from '@/core/config/config.service';
  */
 @Injectable()
 export class HuffmanFrontService implements OnModuleInit {
-  private tree: HuffmanNode | null = null;
-  private encodeUseCase: EncodeTextUseCase | null = null;
-  private decodeUseCase: DecodeTextUseCase | null = null;
-  private readonly treeLoader: TreeFileLoaderAdapter;
+  private tree: HuffmanNode | null = null
+  private encodeUseCase: EncodeTextUseCase | null = null
+  private decodeUseCase: DecodeTextUseCase | null = null
+  private readonly treeLoader: TreeFileLoaderAdapter
 
   constructor(private readonly configService: CustomConfigService) {
-    this.treeLoader = new TreeFileLoaderAdapter();
+    this.treeLoader = new TreeFileLoaderAdapter()
   }
 
   async onModuleInit() {
-    await this.loadTree();
+    await this.loadTree()
   }
 
   private async loadTree(): Promise<void> {
-    const treePath = this.configService.env.HUFFMAN_TREE_FRONT_PATH;
+    const treePath = this.configService.env.HUFFMAN_TREE_FRONT_PATH
 
     try {
-      this.tree = await this.treeLoader.loadTree(treePath);
-      this.encodeUseCase = new EncodeTextUseCase(this.tree);
-      this.decodeUseCase = new DecodeTextUseCase(this.tree);
+      this.tree = await this.treeLoader.loadTree(treePath)
+      this.encodeUseCase = new EncodeTextUseCase(this.tree)
+      this.decodeUseCase = new DecodeTextUseCase(this.tree)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`Failed to load Huffman frontend tree from ${treePath}: ${errorMessage}`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error'
+      throw new Error(
+        `Failed to load Huffman frontend tree from ${treePath}: ${errorMessage}`,
+      )
     }
   }
 
   decode(encodedText: string): string {
-    this.ensureTreeLoaded();
-    const result = this.decodeUseCase!.execute({ encodedText });
+    this.ensureTreeLoaded()
+    const result = this.decodeUseCase!.execute({ encodedText })
 
     if (!result.success) {
-      throw new Error(`Frontend decoding failed: ${result.error}`);
+      throw new Error(`Frontend decoding failed: ${result.error}`)
     }
 
-    return result.decodedText;
+    return result.decodedText
   }
 
   encode(text: string): string {
-    this.ensureTreeLoaded();
-    const result = this.encodeUseCase!.execute({ text });
+    this.ensureTreeLoaded()
+    const result = this.encodeUseCase!.execute({ text })
 
     if (!result.success) {
-      throw new Error(`Frontend encoding failed: ${result.error}`);
+      throw new Error(`Frontend encoding failed: ${result.error}`)
     }
 
-    return result.encodedText;
+    return result.encodedText
   }
 
   private ensureTreeLoaded(): void {
     if (!this.tree || !this.encodeUseCase || !this.decodeUseCase) {
-      throw new Error('Huffman frontend tree not loaded. Service not initialized properly.');
+      throw new Error(
+        'Huffman frontend tree not loaded. Service not initialized properly.',
+      )
     }
   }
 }

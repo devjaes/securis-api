@@ -44,7 +44,9 @@ export const config = (): { APP: IConfig } => ({
 
     // Email
     MAIL_HOST: process.env.MAIL_HOST!,
-    MAIL_PORT: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : 587,
+    MAIL_PORT: process.env.MAIL_PORT
+      ? parseInt(process.env.MAIL_PORT, 10)
+      : 587,
     MAIL_SECURE: process.env.MAIL_SECURE === 'true',
     MAIL_USER: process.env.MAIL_USER!,
     MAIL_PASS: process.env.MAIL_PASS!,
@@ -57,7 +59,9 @@ export const config = (): { APP: IConfig } => ({
 
 export const configValidationSchema = Joi.object<IConfig>({
   // Application
-  NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+  NODE_ENV: Joi.string()
+    .valid('development', 'production', 'test')
+    .default('development'),
   PORT: Joi.number().default(3000),
   API_PREFIX: Joi.string().default('api'),
 

@@ -1,8 +1,8 @@
-import { readFile } from 'fs/promises';
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
-import { HuffmanNode } from '../../domain';
-import { TreeSerializer, TreeJSON } from '../serializers/tree-serializer';
+import { readFile } from 'fs/promises'
+import { existsSync, readFileSync } from 'fs'
+import { resolve } from 'path'
+import { HuffmanNode } from '../../domain'
+import { TreeSerializer, TreeJSON } from '../serializers/tree-serializer'
 
 /**
  * Tree File Loader Adapter
@@ -21,12 +21,12 @@ import { TreeSerializer, TreeJSON } from '../serializers/tree-serializer';
  * ```
  */
 export class TreeFileLoaderAdapter {
-  private readonly treeSerializer: TreeSerializer;
-  private readonly cache: Map<string, HuffmanNode>;
+  private readonly treeSerializer: TreeSerializer
+  private readonly cache: Map<string, HuffmanNode>
 
   constructor() {
-    this.treeSerializer = new TreeSerializer();
-    this.cache = new Map();
+    this.treeSerializer = new TreeSerializer()
+    this.cache = new Map()
   }
 
   /**
@@ -39,42 +39,42 @@ export class TreeFileLoaderAdapter {
    * @throws {Error} If file doesn't exist or is invalid
    */
   async loadTree(filePath: string, useCache = true): Promise<HuffmanNode> {
-    const resolvedPath = resolve(filePath);
+    const resolvedPath = resolve(filePath)
 
     // Check cache first
     if (useCache && this.cache.has(resolvedPath)) {
-      return this.cache.get(resolvedPath)!;
+      return this.cache.get(resolvedPath)!
     }
 
     // Check if file exists
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Tree file not found: ${resolvedPath}`);
+      throw new Error(`Tree file not found: ${resolvedPath}`)
     }
 
     try {
       // Read and parse JSON file
-      const fileContent = await readFile(resolvedPath, 'utf-8');
-      const treeJSON: TreeJSON = JSON.parse(fileContent) as TreeJSON;
+      const fileContent = await readFile(resolvedPath, 'utf-8')
+      const treeJSON: TreeJSON = JSON.parse(fileContent) as TreeJSON
 
       // Validate JSON structure
       if (!this.treeSerializer.isValidTreeJSON(treeJSON)) {
-        throw new Error('Invalid tree JSON structure');
+        throw new Error('Invalid tree JSON structure')
       }
 
       // Deserialize to HuffmanNode
-      const tree = this.treeSerializer.jsonToTree(treeJSON);
+      const tree = this.treeSerializer.jsonToTree(treeJSON)
 
       // Cache the tree
       if (useCache) {
-        this.cache.set(resolvedPath, tree);
+        this.cache.set(resolvedPath, tree)
       }
 
-      return tree;
+      return tree
     } catch (error) {
       if (error instanceof SyntaxError) {
-        throw new Error(`Invalid JSON in tree file: ${error.message}`);
+        throw new Error(`Invalid JSON in tree file: ${error.message}`)
       }
-      throw error;
+      throw error
     }
   }
 
@@ -86,34 +86,34 @@ export class TreeFileLoaderAdapter {
    * @returns The loaded Huffman tree root node
    */
   loadTreeSync(filePath: string): HuffmanNode {
-    const resolvedPath = resolve(filePath);
+    const resolvedPath = resolve(filePath)
 
     // Check cache first
     if (this.cache.has(resolvedPath)) {
-      return this.cache.get(resolvedPath)!;
+      return this.cache.get(resolvedPath)!
     }
 
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Tree file not found: ${resolvedPath}`);
+      throw new Error(`Tree file not found: ${resolvedPath}`)
     }
 
     try {
-      const fileContent = readFileSync(resolvedPath, 'utf-8');
-      const treeJSON: TreeJSON = JSON.parse(fileContent) as TreeJSON;
+      const fileContent = readFileSync(resolvedPath, 'utf-8')
+      const treeJSON: TreeJSON = JSON.parse(fileContent) as TreeJSON
 
       if (!this.treeSerializer.isValidTreeJSON(treeJSON)) {
-        throw new Error('Invalid tree JSON structure');
+        throw new Error('Invalid tree JSON structure')
       }
 
-      const tree = this.treeSerializer.jsonToTree(treeJSON);
-      this.cache.set(resolvedPath, tree);
+      const tree = this.treeSerializer.jsonToTree(treeJSON)
+      this.cache.set(resolvedPath, tree)
 
-      return tree;
+      return tree
     } catch (error) {
       if (error instanceof SyntaxError) {
-        throw new Error(`Invalid JSON in tree file: ${error.message}`);
+        throw new Error(`Invalid JSON in tree file: ${error.message}`)
       }
-      throw error;
+      throw error
     }
   }
 
@@ -121,15 +121,15 @@ export class TreeFileLoaderAdapter {
    * Checks if a tree file exists
    */
   fileExists(filePath: string): boolean {
-    const resolvedPath = resolve(filePath);
-    return existsSync(resolvedPath);
+    const resolvedPath = resolve(filePath)
+    return existsSync(resolvedPath)
   }
 
   /**
    * Clears the tree cache
    */
   clearCache(): void {
-    this.cache.clear();
+    this.cache.clear()
   }
 
   /**
@@ -139,7 +139,7 @@ export class TreeFileLoaderAdapter {
     return {
       size: this.cache.size,
       paths: Array.from(this.cache.keys()),
-    };
+    }
   }
 }
 
@@ -147,6 +147,6 @@ export class TreeFileLoaderAdapter {
  * Cache statistics
  */
 export interface CacheStats {
-  size: number;
-  paths: string[];
+  size: number
+  paths: string[]
 }

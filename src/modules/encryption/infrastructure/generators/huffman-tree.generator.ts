@@ -1,4 +1,4 @@
-import { HuffmanNode, FrequencyMap } from '../../domain';
+import { HuffmanNode, FrequencyMap } from '../../domain'
 
 /**
  * Huffman Tree Generator
@@ -37,8 +37,8 @@ export class HuffmanTreeGenerator {
    * @returns Root node of the generated Huffman tree
    */
   generateFromText(text: string): HuffmanNode {
-    const frequencyMap = FrequencyMap.fromText(text);
-    return this.generateFromFrequencyMap(frequencyMap);
+    const frequencyMap = FrequencyMap.fromText(text)
+    return this.generateFromFrequencyMap(frequencyMap)
   }
 
   /**
@@ -48,42 +48,47 @@ export class HuffmanTreeGenerator {
    * @returns Root node of the generated Huffman tree
    */
   generateFromFrequencyMap(frequencyMap: FrequencyMap): HuffmanNode {
-    const entries = frequencyMap.getEntries();
+    const entries = frequencyMap.getEntries()
 
     if (entries.length === 0) {
-      throw new Error('Cannot generate tree from empty frequency map');
+      throw new Error('Cannot generate tree from empty frequency map')
     }
 
     // Edge case: single character
     if (entries.length === 1) {
-      const [char, freq] = entries[0];
-      return new HuffmanNode(char, freq);
+      const [char, freq] = entries[0]
+      return new HuffmanNode(char, freq)
     }
 
     // Create leaf nodes for each character
-    const heap = new MinHeap<HuffmanNode>((a, b) => a.compareTo(b));
+    const heap = new MinHeap<HuffmanNode>((a, b) => a.compareTo(b))
 
     for (const [char, freq] of entries) {
-      heap.insert(new HuffmanNode(char, freq));
+      heap.insert(new HuffmanNode(char, freq))
     }
 
     // Build the tree bottom-up
     while (heap.size() > 1) {
-      const left = heap.extractMin()!;
-      const right = heap.extractMin()!;
+      const left = heap.extractMin()!
+      const right = heap.extractMin()!
 
       // Create internal node with combined frequency
-      const parent = new HuffmanNode(null, left.frequency + right.frequency, left, right);
+      const parent = new HuffmanNode(
+        null,
+        left.frequency + right.frequency,
+        left,
+        right,
+      )
 
-      heap.insert(parent);
+      heap.insert(parent)
     }
 
-    const root = heap.extractMin();
+    const root = heap.extractMin()
     if (!root) {
-      throw new Error('Failed to generate tree: heap is empty');
+      throw new Error('Failed to generate tree: heap is empty')
     }
 
-    return root;
+    return root
   }
 
   /**
@@ -103,34 +108,36 @@ export class HuffmanTreeGenerator {
     randomizationFactor: number = 0.1,
   ): HuffmanNode {
     if (randomizationFactor < 0 || randomizationFactor > 1) {
-      throw new Error('Randomization factor must be between 0 and 1');
+      throw new Error('Randomization factor must be between 0 and 1')
     }
 
-    const entries = frequencyMap.getEntries();
-    const randomizedEntries: Array<[string, number]> = [];
+    const entries = frequencyMap.getEntries()
+    const randomizedEntries: Array<[string, number]> = []
 
     for (const [char, freq] of entries) {
       // Add random variation to frequency with additional entropy
-      const variation = freq * randomizationFactor;
+      const variation = freq * randomizationFactor
       // Use timestamp-based seed for additional randomness
-      const seed = Math.sin(Date.now() * Math.random()) * 10000;
-      const randomDelta = (Math.random() + Math.abs(seed % 1) - 1) * variation;
-      const newFreq = Math.max(1, Math.round(freq + randomDelta));
+      const seed = Math.sin(Date.now() * Math.random()) * 10000
+      const randomDelta = (Math.random() + Math.abs(seed % 1) - 1) * variation
+      const newFreq = Math.max(1, Math.round(freq + randomDelta))
 
-      randomizedEntries.push([char, newFreq]);
+      randomizedEntries.push([char, newFreq])
     }
 
-    const randomizedMap = FrequencyMap.fromObject(Object.fromEntries(randomizedEntries));
+    const randomizedMap = FrequencyMap.fromObject(
+      Object.fromEntries(randomizedEntries),
+    )
 
-    return this.generateFromFrequencyMap(randomizedMap);
+    return this.generateFromFrequencyMap(randomizedMap)
   }
 
   /**
    * Generates a default tree using common Spanish/UTF-8 characters
    */
   generateDefaultTree(): HuffmanNode {
-    const defaultMap = FrequencyMap.createDefault();
-    return this.generateFromFrequencyMap(defaultMap);
+    const defaultMap = FrequencyMap.createDefault()
+    return this.generateFromFrequencyMap(defaultMap)
   }
 
   /**
@@ -145,13 +152,19 @@ export class HuffmanTreeGenerator {
     baseFrequencyMap?: FrequencyMap,
     randomizationFactor: number = 0.15,
   ): ThreeTreesResult {
-    const baseMap = baseFrequencyMap || FrequencyMap.createDefault();
+    const baseMap = baseFrequencyMap || FrequencyMap.createDefault()
 
     return {
       backendTree: this.generateWithRandomization(baseMap, randomizationFactor),
-      frontendTree: this.generateWithRandomization(baseMap, randomizationFactor),
-      databaseTree: this.generateWithRandomization(baseMap, randomizationFactor),
-    };
+      frontendTree: this.generateWithRandomization(
+        baseMap,
+        randomizationFactor,
+      ),
+      databaseTree: this.generateWithRandomization(
+        baseMap,
+        randomizationFactor,
+      ),
+    }
   }
 }
 
@@ -163,87 +176,87 @@ export class HuffmanTreeGenerator {
  * Used internally by HuffmanTreeGenerator.
  */
 class MinHeap<T> {
-  private items: T[] = [];
+  private items: T[] = []
 
   constructor(private compareFn: (a: T, b: T) => number) {}
 
   size(): number {
-    return this.items.length;
+    return this.items.length
   }
 
   isEmpty(): boolean {
-    return this.items.length === 0;
+    return this.items.length === 0
   }
 
   insert(item: T): void {
-    this.items.push(item);
-    this.bubbleUp(this.items.length - 1);
+    this.items.push(item)
+    this.bubbleUp(this.items.length - 1)
   }
 
   extractMin(): T | undefined {
     if (this.isEmpty()) {
-      return undefined;
+      return undefined
     }
 
-    const min = this.items[0];
-    const last = this.items.pop()!;
+    const min = this.items[0]
+    const last = this.items.pop()!
 
     if (!this.isEmpty()) {
-      this.items[0] = last;
-      this.bubbleDown(0);
+      this.items[0] = last
+      this.bubbleDown(0)
     }
 
-    return min;
+    return min
   }
 
   peek(): T | undefined {
-    return this.items[0];
+    return this.items[0]
   }
 
   private bubbleUp(index: number): void {
     while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
+      const parentIndex = Math.floor((index - 1) / 2)
 
       if (this.compareFn(this.items[index], this.items[parentIndex]) >= 0) {
-        break;
+        break
       }
 
-      this.swap(index, parentIndex);
-      index = parentIndex;
+      this.swap(index, parentIndex)
+      index = parentIndex
     }
   }
 
   private bubbleDown(index: number): void {
     while (true) {
-      const leftChild = 2 * index + 1;
-      const rightChild = 2 * index + 2;
-      let smallest = index;
+      const leftChild = 2 * index + 1
+      const rightChild = 2 * index + 2
+      let smallest = index
 
       if (
         leftChild < this.items.length &&
         this.compareFn(this.items[leftChild], this.items[smallest]) < 0
       ) {
-        smallest = leftChild;
+        smallest = leftChild
       }
 
       if (
         rightChild < this.items.length &&
         this.compareFn(this.items[rightChild], this.items[smallest]) < 0
       ) {
-        smallest = rightChild;
+        smallest = rightChild
       }
 
       if (smallest === index) {
-        break;
+        break
       }
 
-      this.swap(index, smallest);
-      index = smallest;
+      this.swap(index, smallest)
+      index = smallest
     }
   }
 
   private swap(i: number, j: number): void {
-    [this.items[i], this.items[j]] = [this.items[j], this.items[i]];
+    ;[this.items[i], this.items[j]] = [this.items[j], this.items[i]]
   }
 }
 
@@ -251,7 +264,7 @@ class MinHeap<T> {
  * Result of generating three trees
  */
 export interface ThreeTreesResult {
-  backendTree: HuffmanNode;
-  frontendTree: HuffmanNode;
-  databaseTree: HuffmanNode;
+  backendTree: HuffmanNode
+  frontendTree: HuffmanNode
+  databaseTree: HuffmanNode
 }

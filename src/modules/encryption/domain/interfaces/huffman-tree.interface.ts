@@ -1,4 +1,4 @@
-import { HuffmanNode } from '../entities/huffman-node.entity';
+import { HuffmanNode } from '../entities/huffman-node.entity'
 
 /**
  * Huffman Tree Interface
@@ -13,32 +13,32 @@ export interface IHuffmanTree {
   /**
    * The root node of the Huffman tree
    */
-  readonly root: HuffmanNode;
+  readonly root: HuffmanNode
 
   /**
    * Gets the Huffman code for a specific character
    * @param character - The character to get the code for
    * @returns The binary code string (e.g., "1010") or null if character not found
    */
-  getCode(character: string): string | null;
+  getCode(character: string): string | null
 
   /**
    * Gets all character codes as a mapping
    * @returns An object mapping characters to their binary codes
    */
-  getCodeTable(): Record<string, string>;
+  getCodeTable(): Record<string, string>
 
   /**
    * Decodes a binary string back to the original text
    * @param binaryString - The encoded binary string
    * @returns The decoded text
    */
-  decode(binaryString: string): string;
+  decode(binaryString: string): string
 
   /**
    * Serializes the tree to a JSON object
    */
-  toJSON(): HuffmanTreeJSON;
+  toJSON(): HuffmanTreeJSON
 }
 
 /**
@@ -46,10 +46,10 @@ export interface IHuffmanTree {
  */
 export interface HuffmanTreeJSON {
   root: {
-    character: string | null;
-    frequency: number;
-    left: HuffmanTreeJSON['root'] | null;
-    right: HuffmanTreeJSON['root'] | null;
-  };
-  codeTable: Record<string, string>;
+    character: string | null
+    frequency: number
+    left: HuffmanTreeJSON['root'] | null
+    right: HuffmanTreeJSON['root'] | null
+  }
+  codeTable: Record<string, string>
 }

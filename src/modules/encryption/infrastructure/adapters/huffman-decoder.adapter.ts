@@ -1,6 +1,6 @@
-import { IHuffmanDecoder } from '../../domain';
-import { HuffmanNode } from '../../domain/entities/huffman-node.entity';
-import { BinaryToBase64Serializer } from '../serializers/binary-to-base64.serializer';
+import { IHuffmanDecoder } from '../../domain'
+import { HuffmanNode } from '../../domain/entities/huffman-node.entity'
+import { BinaryToBase64Serializer } from '../serializers/binary-to-base64.serializer'
 
 /**
  * Huffman Decoder Adapter
@@ -22,13 +22,13 @@ import { BinaryToBase64Serializer } from '../serializers/binary-to-base64.serial
  * ```
  */
 export class HuffmanDecoderAdapter implements IHuffmanDecoder {
-  private readonly serializer: BinaryToBase64Serializer;
+  private readonly serializer: BinaryToBase64Serializer
 
   /**
    * @param tree - The Huffman tree root node to use for decoding
    */
   constructor(private readonly tree: HuffmanNode) {
-    this.serializer = new BinaryToBase64Serializer();
+    this.serializer = new BinaryToBase64Serializer()
   }
 
   /**
@@ -36,15 +36,15 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
    */
   decode(encodedText: string): string {
     if (!encodedText || encodedText.length === 0) {
-      throw new Error('Cannot decode empty text');
+      throw new Error('Cannot decode empty text')
     }
 
     if (!this.serializer.isValidBase64(encodedText)) {
-      throw new Error('Invalid Base64 string');
+      throw new Error('Invalid Base64 string')
     }
 
-    const binaryString = this.serializer.base64ToBinary(encodedText);
-    return this.decodeFromBinary(binaryString);
+    const binaryString = this.serializer.base64ToBinary(encodedText)
+    return this.decodeFromBinary(binaryString)
   }
 
   /**
@@ -52,61 +52,67 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
    */
   decodeFromBinary(binaryString: string): string {
     if (!binaryString || binaryString.length === 0) {
-      throw new Error('Cannot decode empty binary string');
+      throw new Error('Cannot decode empty binary string')
     }
 
     if (!this.serializer.isValidBinary(binaryString)) {
-      throw new Error('Invalid binary string: must contain only 0s and 1s');
+      throw new Error('Invalid binary string: must contain only 0s and 1s')
     }
 
     // Special case: single-node tree (only one unique character)
     if (this.tree.isLeaf()) {
       if (this.tree.character === null) {
-        throw new Error('Single-node tree has null character');
+        throw new Error('Single-node tree has null character')
       }
       // Each bit represents one character occurrence
-      const characterCount = binaryString.length;
-      return this.tree.character.repeat(characterCount);
+      const characterCount = binaryString.length
+      return this.tree.character.repeat(characterCount)
     }
 
-    let decodedText = '';
-    let currentNode = this.tree;
-    let position = 0;
+    let decodedText = ''
+    let currentNode = this.tree
+    let position = 0
 
     while (position < binaryString.length) {
-      const bit = binaryString[position];
+      const bit = binaryString[position]
 
       if (bit === '0') {
         if (currentNode.left === null) {
-          throw new Error(`Invalid encoding: expected left child at position ${position}`);
+          throw new Error(
+            `Invalid encoding: expected left child at position ${position}`,
+          )
         }
-        currentNode = currentNode.left;
+        currentNode = currentNode.left
       } else if (bit === '1') {
         if (currentNode.right === null) {
-          throw new Error(`Invalid encoding: expected right child at position ${position}`);
+          throw new Error(
+            `Invalid encoding: expected right child at position ${position}`,
+          )
         }
-        currentNode = currentNode.right;
+        currentNode = currentNode.right
       } else {
-        throw new Error(`Invalid bit at position ${position}: ${bit}`);
+        throw new Error(`Invalid bit at position ${position}: ${bit}`)
       }
 
       if (currentNode.isLeaf()) {
         if (currentNode.character === null) {
-          throw new Error('Leaf node has null character');
+          throw new Error('Leaf node has null character')
         }
 
-        decodedText += currentNode.character;
-        currentNode = this.tree;
+        decodedText += currentNode.character
+        currentNode = this.tree
       }
 
-      position++;
+      position++
     }
 
     if (currentNode !== this.tree) {
-      throw new Error('Invalid encoding: binary string does not represent complete characters');
+      throw new Error(
+        'Invalid encoding: binary string does not represent complete characters',
+      )
     }
 
-    return decodedText;
+    return decodedText
   }
 
   /**
@@ -114,10 +120,10 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
    */
   canDecode(encodedText: string): boolean {
     try {
-      this.decode(encodedText);
-      return true;
+      this.decode(encodedText)
+      return true
     } catch {
-      return false;
+      return false
     }
   }
 
@@ -127,18 +133,18 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
    */
   tryDecode(encodedText: string): DecodeResult {
     try {
-      const decoded = this.decode(encodedText);
+      const decoded = this.decode(encodedText)
       return {
         success: true,
         data: decoded,
         error: null,
-      };
+      }
     } catch (error) {
       return {
         success: false,
         data: null,
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      }
     }
   }
 
@@ -146,13 +152,13 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
    * Gets decoding statistics
    */
   getDecodingStats(encodedText: string): DecodingStats {
-    const binaryString = this.serializer.base64ToBinary(encodedText);
-    const decodedText = this.decodeFromBinary(binaryString);
+    const binaryString = this.serializer.base64ToBinary(encodedText)
+    const decodedText = this.decodeFromBinary(binaryString)
 
-    const base64Length = encodedText.length;
-    const base64Bits = base64Length * 8;
-    const compressedBits = binaryString.length;
-    const originalBits = decodedText.length * 16;
+    const base64Length = encodedText.length
+    const base64Bits = base64Length * 8
+    const compressedBits = binaryString.length
+    const originalBits = decodedText.length * 16
 
     return {
       encodedLength: encodedText.length,
@@ -162,7 +168,7 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
       originalBits,
       compressionRatio: compressedBits / originalBits,
       spaceSavings: ((originalBits - compressedBits) / originalBits) * 100,
-    };
+    }
   }
 }
 
@@ -170,20 +176,20 @@ export class HuffmanDecoderAdapter implements IHuffmanDecoder {
  * Result of a decode attempt
  */
 export interface DecodeResult {
-  success: boolean;
-  data: string | null;
-  error: string | null;
+  success: boolean
+  data: string | null
+  error: string | null
 }
 
 /**
  * Decoding statistics
  */
 export interface DecodingStats {
-  encodedLength: number;
-  decodedLength: number;
-  base64Bits: number;
-  compressedBits: number;
-  originalBits: number;
-  compressionRatio: number;
-  spaceSavings: number;
+  encodedLength: number
+  decodedLength: number
+  base64Bits: number
+  compressedBits: number
+  originalBits: number
+  compressionRatio: number
+  spaceSavings: number
 }

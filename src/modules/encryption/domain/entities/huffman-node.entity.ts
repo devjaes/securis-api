@@ -35,7 +35,7 @@ export class HuffmanNode {
    * Checks if this node is a leaf node (contains a character)
    */
   isLeaf(): boolean {
-    return this.left === null && this.right === null;
+    return this.left === null && this.right === null
   }
 
   /**
@@ -48,7 +48,7 @@ export class HuffmanNode {
       frequency: this.frequency,
       left: this.left?.toJSON() ?? null,
       right: this.right?.toJSON() ?? null,
-    };
+    }
   }
 
   /**
@@ -61,7 +61,7 @@ export class HuffmanNode {
       json.frequency,
       json.left ? HuffmanNode.fromJSON(json.left) : null,
       json.right ? HuffmanNode.fromJSON(json.right) : null,
-    );
+    )
   }
 
   /**
@@ -69,7 +69,7 @@ export class HuffmanNode {
    * Returns negative if this node should come before the other
    */
   compareTo(other: HuffmanNode): number {
-    return this.frequency - other.frequency;
+    return this.frequency - other.frequency
   }
 }
 
@@ -78,8 +78,8 @@ export class HuffmanNode {
  * Used for serialization/deserialization
  */
 export interface HuffmanNodeJSON {
-  character: string | null;
-  frequency: number;
-  left: HuffmanNodeJSON | null;
-  right: HuffmanNodeJSON | null;
+  character: string | null
+  frequency: number
+  left: HuffmanNodeJSON | null
+  right: HuffmanNodeJSON | null
 }

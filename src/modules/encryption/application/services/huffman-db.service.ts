@@ -1,9 +1,9 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { HuffmanNode } from '../../domain';
-import { TreeFileLoaderAdapter } from '../../infrastructure';
-import { EncodeTextUseCase } from '../use-cases/encode-text.use-case';
-import { DecodeTextUseCase } from '../use-cases/decode-text.use-case';
-import { CustomConfigService } from '@/core/config/config.service';
+import { Injectable, OnModuleInit } from '@nestjs/common'
+import { HuffmanNode } from '../../domain'
+import { TreeFileLoaderAdapter } from '../../infrastructure'
+import { EncodeTextUseCase } from '../use-cases/encode-text.use-case'
+import { DecodeTextUseCase } from '../use-cases/decode-text.use-case'
+import { CustomConfigService } from '@/core/config/config.service'
 
 /**
  * Huffman Database Service
@@ -31,36 +31,36 @@ import { CustomConfigService } from '@/core/config/config.service';
  */
 @Injectable()
 export class HuffmanDbService implements OnModuleInit {
-  private tree: HuffmanNode | null = null;
-  private encodeUseCase: EncodeTextUseCase | null = null;
-  private decodeUseCase: DecodeTextUseCase | null = null;
-  private readonly treeLoader: TreeFileLoaderAdapter;
+  private tree: HuffmanNode | null = null
+  private encodeUseCase: EncodeTextUseCase | null = null
+  private decodeUseCase: DecodeTextUseCase | null = null
+  private readonly treeLoader: TreeFileLoaderAdapter
 
   constructor(private readonly configService: CustomConfigService) {
-    this.treeLoader = new TreeFileLoaderAdapter();
+    this.treeLoader = new TreeFileLoaderAdapter()
   }
 
   /**
    * Loads the Huffman tree when the module initializes
    */
   async onModuleInit() {
-    await this.loadTree();
+    await this.loadTree()
   }
 
   /**
    * Loads or reloads the Huffman tree from the configured path
    */
   private async loadTree(): Promise<void> {
-    const treePath = this.configService.env.HUFFMAN_TREE_DB_PATH;
+    const treePath = this.configService.env.HUFFMAN_TREE_DB_PATH
 
     try {
-      this.tree = await this.treeLoader.loadTree(treePath);
-      this.encodeUseCase = new EncodeTextUseCase(this.tree);
-      this.decodeUseCase = new DecodeTextUseCase(this.tree);
+      this.tree = await this.treeLoader.loadTree(treePath)
+      this.encodeUseCase = new EncodeTextUseCase(this.tree)
+      this.decodeUseCase = new DecodeTextUseCase(this.tree)
     } catch (error) {
       throw new Error(
         `Failed to load Huffman database tree from ${treePath}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+      )
     }
   }
 
@@ -72,15 +72,15 @@ export class HuffmanDbService implements OnModuleInit {
    * @throws {Error} If tree is not loaded or text contains unsupported characters
    */
   encode(text: string): string {
-    this.ensureTreeLoaded();
+    this.ensureTreeLoaded()
 
-    const result = this.encodeUseCase!.execute({ text });
+    const result = this.encodeUseCase!.execute({ text })
 
     if (!result.success) {
-      throw new Error(`Database encoding failed: ${result.error}`);
+      throw new Error(`Database encoding failed: ${result.error}`)
     }
 
-    return result.encodedText;
+    return result.encodedText
   }
 
   /**
@@ -91,15 +91,15 @@ export class HuffmanDbService implements OnModuleInit {
    * @throws {Error} If tree is not loaded or encoded text is invalid
    */
   decode(encodedText: string): string {
-    this.ensureTreeLoaded();
+    this.ensureTreeLoaded()
 
-    const result = this.decodeUseCase!.execute({ encodedText });
+    const result = this.decodeUseCase!.execute({ encodedText })
 
     if (!result.success) {
-      throw new Error(`Database decoding failed: ${result.error}`);
+      throw new Error(`Database decoding failed: ${result.error}`)
     }
 
-    return result.decodedText;
+    return result.decodedText
   }
 
   /**
@@ -107,49 +107,51 @@ export class HuffmanDbService implements OnModuleInit {
    * Useful for encrypting multiple columns in a single row
    */
   encodeMultiple(fields: Record<string, string>): Record<string, string> {
-    const encoded: Record<string, string> = {};
+    const encoded: Record<string, string> = {}
 
     for (const [key, value] of Object.entries(fields)) {
-      encoded[key] = this.encode(value);
+      encoded[key] = this.encode(value)
     }
 
-    return encoded;
+    return encoded
   }
 
   /**
    * Decodes multiple fields at once (batch operation)
    */
   decodeMultiple(fields: Record<string, string>): Record<string, string> {
-    const decoded: Record<string, string> = {};
+    const decoded: Record<string, string> = {}
 
     for (const [key, value] of Object.entries(fields)) {
-      decoded[key] = this.decode(value);
+      decoded[key] = this.decode(value)
     }
 
-    return decoded;
+    return decoded
   }
 
   /**
    * Validates if text can be encoded
    */
   canEncode(text: string): boolean {
-    this.ensureTreeLoaded();
-    const validation = this.encodeUseCase!.validate(text);
-    return validation.canEncode;
+    this.ensureTreeLoaded()
+    const validation = this.encodeUseCase!.validate(text)
+    return validation.canEncode
   }
 
   /**
    * Validates if encoded text can be decoded
    */
   canDecode(encodedText: string): boolean {
-    this.ensureTreeLoaded();
-    const validation = this.decodeUseCase!.validate(encodedText);
-    return validation.canDecode;
+    this.ensureTreeLoaded()
+    const validation = this.decodeUseCase!.validate(encodedText)
+    return validation.canDecode
   }
 
   private ensureTreeLoaded(): void {
     if (!this.tree || !this.encodeUseCase || !this.decodeUseCase) {
-      throw new Error('Huffman tree not loaded. Service not initialized properly.');
+      throw new Error(
+        'Huffman tree not loaded. Service not initialized properly.',
+      )
     }
   }
 }

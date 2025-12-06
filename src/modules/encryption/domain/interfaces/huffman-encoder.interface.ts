@@ -22,7 +22,7 @@ export interface IHuffmanEncoder {
    * // Returns: "SGVsbG8gV29ybGQ=" (Base64)
    * ```
    */
-  encode(text: string): string;
+  encode(text: string): string
 
   /**
    * Encodes text to binary string (intermediate format)
@@ -31,7 +31,7 @@ export interface IHuffmanEncoder {
    * @param text - The plain text to encode
    * @returns The binary representation as a string (e.g., "10110010...")
    */
-  encodeToBinary(text: string): string;
+  encodeToBinary(text: string): string
 
   /**
    * Validates if the text can be encoded with the current tree
@@ -39,7 +39,7 @@ export interface IHuffmanEncoder {
    * @param text - The text to validate
    * @returns true if all characters are in the tree, false otherwise
    */
-  canEncode(text: string): boolean;
+  canEncode(text: string): boolean
 
   /**
    * Gets characters that cannot be encoded
@@ -47,5 +47,5 @@ export interface IHuffmanEncoder {
    * @param text - The text to check
    * @returns Array of characters not present in the Huffman tree
    */
-  getUnencodableCharacters(text: string): string[];
+  getUnencodableCharacters(text: string): string[]
 }

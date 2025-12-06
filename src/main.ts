@@ -32,7 +32,7 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter())
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
-  const apiPrefix = configService.env.API_PREFIX;
+  const apiPrefix = configService.env.API_PREFIX
   // app.enableVersioning({
   //   type: VersioningType.URI,
   //   defaultVersion: '1',
@@ -44,19 +44,18 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+      const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173']
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+        callback(null, true)
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error('Not allowed by CORS'))
       }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     exposedHeaders: ['Content-Type'],
-  });
-
+  })
 
   const config = new DocumentBuilder()
     .setTitle('Nest Prisma Base API')
