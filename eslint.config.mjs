@@ -25,24 +25,20 @@ export default tseslint.config(
     },
   },
   {
-    files: ['test/**/*.ts'],
-    languageOptions: {
-      parserOptions: {
-        projectService: false,
-        project: './tsconfig.e2e.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-  {
     rules: {
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      'object-shorthand': ['error', 'always'],
+      'quotes': ['error', 'single'],
+      "@typescript-eslint/await-thenable": "error",
+      "@typescript-eslint/no-unnecessary-condition": "error",
     },
   },
 );
