@@ -521,4 +521,65 @@ export class DocumentsService {
       )
     }
   }
+
+  async deleteDocument(id: number): Promise<void> {
+    const prisma = this.databaseService.getAdminClient()
+
+    try {
+      // Ensure document exists before attempting delete
+      const existingDocument = await prisma.document.findUnique({
+        where: { id },
+      })
+
+      if (!existingDocument) {
+        throw new BadRequestException(`Documento con ID ${id} no encontrado`)
+      }
+
+      await prisma.document.delete({
+        where: { id },
+      })
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error
+      }
+      throw new BadRequestException(
+        error instanceof Error
+          ? `Error al eliminar el documento: ${error.message}`
+          : 'Error al eliminar el documento',
+      )
+    }
+  }
+
+  async markDocumentAsRead(documentId: number, userId: number): Promise<void> {
+    const prisma = this.databaseService.getAdminClient()
+
+    try {
+      const result = await prisma.documentRecipient.updateMany({
+        where: {
+          documentId,
+          recipientId: userId,
+          isRead: false,
+        },
+        data: {
+          isRead: true,
+          readDate: new Date(),
+        },
+      })
+
+      if (result.count === 0) {
+        throw new BadRequestException(
+          `No se encontró un destinatario para el documento ${documentId} y usuario ${userId}`,
+        )
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error
+      }
+      throw new BadRequestException(
+        error instanceof Error
+          ? `Error al marcar el documento como leído: ${error.message}`
+          : 'Error al marcar el documento como leído',
+      )
+    }
+  }
 }

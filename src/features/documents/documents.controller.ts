@@ -5,6 +5,8 @@ import {
   Get,
   Post,
   Put,
+  Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -40,6 +42,7 @@ import {
   GetDocumentsResponseDto,
   DocumentResponseDto,
 } from './dto/document-response.dto'
+import { MultipartDecryptionInterceptor } from '../encryption'
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -57,7 +60,10 @@ export class DocumentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FilesInterceptor('attachments', 10))
+  @UseInterceptors(
+    FilesInterceptor('attachments', 10),
+    MultipartDecryptionInterceptor,
+  )
   @ApiOperation({
     summary: 'Crea un nuevo documento',
     description:
@@ -389,6 +395,80 @@ export class DocumentsController {
         error instanceof Error
           ? error.message
           : 'Error al actualizar el documento',
+      )
+    }
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Elimina un documento',
+    description:
+      'Elimina un documento existente. Esta operación es irreversible y elimina también sus adjuntos y destinatarios asociados.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Documento eliminado exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Error: documento no encontrado o error al eliminar',
+  })
+  async deleteDocument(@Param('id', ParseIntPipe) id: number) {
+    try {
+      await this.documentsService.deleteDocument(id)
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? error.message
+          : 'Error al eliminar el documento',
+      )
+    }
+  }
+
+  @Patch(':id/mark-read')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Marca un documento como leído para el usuario autenticado',
+    description:
+      'Actualiza el registro de document_recipients para marcar el documento como leído por el usuario actual.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Documento marcado como leído exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Error: documento o destinatario no encontrado o error al actualizar',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado',
+  })
+  async markDocumentAsRead(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    try {
+      const userId = parseInt(req.user?.id || '0', 10)
+      if (!userId) {
+        throw new BadRequestException('Usuario no autenticado')
+      }
+
+      await this.documentsService.markDocumentAsRead(id, userId)
+
+      return {
+        success: true,
+        message: 'Documento marcado como leído exitosamente',
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error
+          ? error.message
+          : 'Error al marcar el documento como leído',
       )
     }
   }

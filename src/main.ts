@@ -7,9 +7,13 @@ import * as express from 'express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ApiPaginatedRes, ApiRes } from './shared/dtos/res/api-response.dto'
 import { BaseParamsReqDto } from './shared/dtos/req/base-params.dto'
+import { LoggingInterceptor } from './shared/interceptors/logging.interceptor'
+import { GlobalExceptionFilter } from './shared/filters/all-exception.filter'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true })
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  })
   const configService = app.get(CustomConfigService)
   const port = configService.env.PORT
 
@@ -18,7 +22,12 @@ async function bootstrap() {
   app.use(express.urlencoded({ limit: '50mb', extended: true }))
   app.use(express.text({ limit: '50mb' }))
 
-  app.enableCors('*')
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  })
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -30,8 +39,11 @@ async function bootstrap() {
       },
     }),
   )
-  // app.useGlobalInterceptors(app.get(ResponseInterceptor))
-  // app.useGlobalFilters(new GlobalExceptionFilter())
+
+  // Enable global logging interceptor and exception filter
+  app.useGlobalInterceptors(new LoggingInterceptor())
+  app.useGlobalFilters(new GlobalExceptionFilter())
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
   const apiPrefix = configService.env.API_PREFIX
@@ -60,7 +72,7 @@ async function bootstrap() {
   // })
 
   const config = new DocumentBuilder()
-    .setTitle('Nest Prisma Base API')
+    .setTitle('Securis API')
     .setDescription(
       'Complete API documentation for Nest Prisma Base. This API is designed to provide a seamless experience for developers and users alike. It includes endpoints for authentication, user management and more.',
     )
@@ -95,7 +107,7 @@ async function bootstrap() {
         theme: 'agate',
       },
     },
-    customSiteTitle: 'EcuaTickets API Documentation',
+    customSiteTitle: 'Securis API Documentation',
     // customfavIcon: 'https://nestjs.com/favicon.ico',
     customCss: `
         .swagger-ui .information-container { padding: 20px 0 }
