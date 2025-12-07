@@ -9,3 +9,4 @@ export * from './application'
 
 // Presentation exports
 export * from './presentation/encryption.module'
+export * from './presentation/interceptors'
