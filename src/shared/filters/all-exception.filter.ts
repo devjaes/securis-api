@@ -119,7 +119,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   private logValidationError(request: Request, errorResponse: any): void {
     const logMessage = [
       `\n${'!'.repeat(80)}`,
-      `🚫 VALIDATION ERROR`,
+      '🚫 VALIDATION ERROR',
       `${'!'.repeat(80)}`,
       `⏰ Timestamp: ${new Date().toISOString()}`,
       `🔗 ${request.method} ${request.originalUrl || request.url}`,
@@ -132,7 +132,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ? errorResponse.message
         : [errorResponse.message]
 
-      logMessage.push(`\n📋 Validation Errors:`)
+      logMessage.push('\n📋 Validation Errors:')
       messages.forEach((msg: string, idx: number) => {
         logMessage.push(`   ${idx + 1}. ${msg}`)
       })
@@ -194,13 +194,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   ) {
     const logMessage = [
       `\n${'#'.repeat(80)}`,
-      `💥 EXCEPTION CAUGHT`,
+      '💥 EXCEPTION CAUGHT',
       `${'#'.repeat(80)}`,
       `⏰ Timestamp: ${new Date().toISOString()}`,
       `🔗 ${request.method} ${request.originalUrl || request.url}`,
       `🌐 IP: ${request.ip || request.connection?.remoteAddress || 'unknown'}`,
       `👤 User: ${(request as any).user?.id || 'anonymous'}`,
-      `\n🚨 Exception Details:`,
+      '\n🚨 Exception Details:',
       `   Type: ${exceptionDetails.name}`,
       `   Message: ${exceptionDetails.message}`,
     ]
@@ -225,7 +225,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Log stack trace
     if (exceptionDetails.stack) {
       const stackLines = exceptionDetails.stack.split('\n').slice(0, 10)
-      logMessage.push(`\n📚 Stack Trace (first 10 lines):`)
+      logMessage.push('\n📚 Stack Trace (first 10 lines):')
       stackLines.forEach((line: string) => {
         logMessage.push(`   ${line}`)
       })

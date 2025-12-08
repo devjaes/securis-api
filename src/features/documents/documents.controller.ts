@@ -120,6 +120,12 @@ export class DocumentsController {
           type: 'string',
           example: 'firma-qr-123',
         },
+        includeSignature: {
+          type: 'boolean',
+          example: false,
+          description:
+            'Si es true, genera automáticamente un código QR con información del remitente y reemplaza {{signature}} en el HTML',
+        },
         attachments: {
           type: 'array',
           items: {
@@ -474,22 +480,24 @@ export class DocumentsController {
   }
 
   @Get('pdf/download')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Descarga un archivo PDF por su ruta',
     description:
-      'Recibe la ruta del archivo PDF y devuelve el buffer del archivo para descarga o visualización',
+      'Recibe la ruta del archivo PDF y devuelve el buffer del archivo para descarga o visualización. Si el documento es CIFRADO y el usuario es autor o destinatario, se genera un PDF temporal descifrado. Acepta rutas relativas (con o sin prefijo "documents/") o rutas absolutas dentro del directorio de uploads.',
   })
   @ApiQuery({
     name: 'path',
     description:
-      'Ruta relativa del archivo PDF (ej: uploads/documents/documento.pdf)',
-    example: 'uploads/documents/pdf-documento-1234567890-abc123.pdf',
+      'Ruta relativa del archivo PDF. Puede ser: "documents/documento.pdf", solo el nombre del archivo "documento.pdf" (se agregará automáticamente el prefijo "documents/"), o ruta absoluta dentro del directorio de uploads',
+    example: 'documents/pdf-documento-1234567890-abc123.pdf',
     type: String,
     required: true,
   })
   @ApiResponse({
     status: 200,
-    description: 'Archivo PDF obtenido exitosamente',
+    description: 'Archivo PDF obtenido exitosamente (descifrado si es CIFRADO y el usuario tiene permisos)',
     content: {
       'application/pdf': {
         schema: {
@@ -501,27 +509,43 @@ export class DocumentsController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Error: ruta inválida o archivo no es un PDF válido',
+    description:
+      'Error: ruta inválida (path traversal detectado, ruta fuera del directorio permitido, o formato incorrecto), archivo no es un PDF válido, o usuario no tiene permisos',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'No autorizado',
   })
   @ApiResponse({
     status: 404,
     description: 'Error: archivo no encontrado',
   })
-  async downloadPdf(@Query('path') filePath: string, @Res() res: Response) {
-    console.log('filePath', filePath)
+  async downloadPdf(
+    @Query('path') filePath: string,
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
     try {
-      if (!filePath) {
-        throw new BadRequestException('La ruta del archivo es requerida')
+      const userId = parseInt(req.user?.id || '0', 10)
+      if (!userId) {
+        throw new BadRequestException('Usuario no autenticado')
       }
 
-      const pdfBuffer = await this.documentsService.getPdfByPath(filePath)
+      // Obtener el PDF (descifrado si es CIFRADO y el usuario tiene permisos)
+      const pdfBuffer = await this.documentsService.getPdfByPath(
+        filePath,
+        userId,
+      )
 
       // Obtener el nombre del archivo de la ruta
       const fileName = path.basename(filePath)
 
-      // Configurar headers para la descarga
+      // Configurar headers para la descarga/visualización
       res.setHeader('Content-Type', 'application/pdf')
-      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${fileName}"`,
+      ) // inline para visualización en el navegador
       res.setHeader('Content-Length', pdfBuffer.length.toString())
 
       // Enviar el buffer

@@ -5,6 +5,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import puppeteer from 'puppeteer'
 import { encryptPDF } from 'pdf-password'
+import * as QRCode from 'qrcode'
 
 @Injectable()
 export class PdfService {
@@ -330,5 +331,61 @@ export class PdfService {
     await fs.writeFile(filePath, fileBuffer)
 
     return filePath
+  }
+
+  /**
+   * Genera un código QR con información del remitente como imagen base64
+   * @param authorInfo - Información del autor/remitente
+   * @returns String con la imagen QR en formato base64 data URL
+   */
+  async generateSignatureQR(authorInfo: {
+    name?: string | null
+    email: string
+    id: number
+  }): Promise<string> {
+    try {
+      // Crear objeto con información del remitente
+      const qrData = {
+        name: authorInfo.name || 'Usuario',
+        email: authorInfo.email,
+        id: authorInfo.id,
+        timestamp: new Date().toISOString(),
+      }
+
+      // Generar QR como data URL (base64)
+      const qrDataUrl = await QRCode.toDataURL(JSON.stringify(qrData), {
+        errorCorrectionLevel: 'M',
+        type: 'image/png',
+        width: 200,
+        margin: 1,
+      })
+
+      return qrDataUrl
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? `Error al generar el código QR: ${error.message}`
+          : 'Error al generar el código QR',
+      )
+    }
+  }
+
+  /**
+   * Reemplaza el placeholder {{signature}} en el HTML con la imagen QR
+   * @param html - Contenido HTML original
+   * @param qrDataUrl - Data URL de la imagen QR
+   * @returns HTML con el placeholder reemplazado por la imagen QR
+   */
+  replaceSignaturePlaceholder(html: string, qrDataUrl: string): string {
+    // Crear la imagen HTML con el QR (más pequeño y alineado a la izquierda)
+    const qrImageHtml = `
+      <div style="text-align: left; margin: 10px 0;">
+        <img src="${qrDataUrl}" alt="Firma Digital" style="max-width: 120px; height: auto;" />
+        <p style="margin-top: 5px; font-size: 9pt; color: #666;">Firma Digital</p>
+      </div>
+    `
+
+    // Reemplazar el placeholder (case-insensitive y con posibles espacios)
+    return html.replace(/\{\{\s*signature\s*\}\}/gi, qrImageHtml.trim())
   }
 }

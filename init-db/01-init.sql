@@ -217,7 +217,20 @@ BEGIN
 END
 GO
 
--- ⭐⭐⭐ DOCUMENTS TABLE - 2 campos enmascarados ⭐⭐⭐
+-- ⭐⭐⭐ DOCUMENTS TABLE - 3 campos enmascarados ⭐⭐⭐
+
+-- Mask subject (shows: pre****eto)
+IF NOT EXISTS (
+    SELECT 1 FROM sys.masked_columns 
+    WHERE object_id = OBJECT_ID('documents') 
+    AND name = 'subject'
+)
+BEGIN
+    ALTER TABLE documents
+    ALTER COLUMN subject ADD MASKED WITH (FUNCTION = 'partial(3,"****",7)');
+    PRINT 'Data masking added to documents.subject';
+END
+GO
 
 -- Mask pdf_path (shows: XXXX)
 IF NOT EXISTS (

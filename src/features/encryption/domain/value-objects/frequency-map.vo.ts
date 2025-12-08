@@ -181,6 +181,111 @@ export class FrequencyMap {
       ']': 4,
       '{': 4,
       '}': 4,
+      // Caracteres Unicode comunes que pueden aparecer en JSON/datos
+      Ã: 5, // Carácter UTF-8 mal interpretado común
+      '³': 3, // Superíndice 3
+      '²': 2, // Superíndice 2
+      '¹': 1, // Superíndice 1
+      '°': 2, // Grado
+      º: 2, // Ordinal masculino
+      ª: 1, // Ordinal femenino
+      // Más caracteres especiales comunes
+      '€': 3,
+      '£': 2,
+      '¥': 2,
+      '©': 1,
+      '®': 1,
+      '™': 1,
+      '§': 2,
+      '¶': 1,
+      '•': 2,
+      '…': 2,
+      '–': 3, // En dash
+      '—': 2, // Em dash
+      '«': 2, // Comillas francesas
+      '»': 2,
+      '„': 1, // Comillas alemanas
+      '‚': 1,
+      '‹': 1,
+      '›': 1,
+      // Caracteres de escape y control comunes en JSON
+      '\r': 5, // Carriage return
+      '\f': 2, // Form feed
+      '\b': 1, // Backspace
+      // Más símbolos matemáticos
+      '±': 2,
+      '×': 2,
+      '÷': 2,
+      '≤': 1,
+      '≥': 1,
+      '≠': 1,
+      '≈': 1,
+      '∞': 1,
+      '∑': 1,
+      '∏': 1,
+      '√': 1,
+      '∫': 1,
+      '∆': 1,
+      '∇': 1,
+      α: 1,
+      β: 1,
+      γ: 1,
+      π: 1,
+      Ω: 1,
+      // Caracteres de codificación UTF-8 comunes (bytes mal interpretados)
+      Â: 2,
+      Ê: 1,
+      Î: 1,
+      Ô: 1,
+      Û: 1,
+      ã: 3,
+      õ: 2,
+      ç: 3,
+      Ç: 1,
+      // Más acentos y diacríticos
+      à: 3,
+      è: 3,
+      ì: 2,
+      ò: 2,
+      ù: 2,
+      À: 1,
+      È: 1,
+      Ì: 1,
+      Ò: 1,
+      Ù: 1,
+      â: 2,
+      ê: 2,
+      î: 1,
+      ô: 2,
+      û: 1,
+      ä: 2,
+      ë: 1,
+      ï: 1,
+      ö: 2,
+      Ä: 1,
+      Ë: 1,
+      Ï: 1,
+      Ö: 1,
+      å: 1,
+      Å: 1,
+      æ: 1,
+      Æ: 1,
+      ø: 1,
+      Ø: 1,
+      ß: 1,
+      // Caracteres de puntuación adicionales
+      '`': 3, // Backtick
+      '~': 4, // Tilde
+      '^': 2, // Caret
+      // Caracteres de control y espacios
+      '\u00A0': 5, // Non-breaking space
+      '\u2000': 1, // En quad
+      '\u2001': 1, // Em quad
+      '\u2002': 1, // En space
+      '\u2003': 1, // Em space
+      '\u2009': 2, // Thin space
+      '\u2028': 1, // Line separator
+      '\u2029': 1, // Paragraph separator
     }
 
     return FrequencyMap.fromObject(defaultFrequencies)

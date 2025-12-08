@@ -198,14 +198,14 @@ export class LoggingInterceptor implements NestInterceptor {
       const validationErrors = Array.isArray(error.response.message)
         ? error.response.message
         : [error.response.message]
-      logMessage.push(`📋 Validation Errors:`)
+      logMessage.push('📋 Validation Errors:')
       validationErrors.forEach((err: string, idx: number) => {
         logMessage.push(`   ${idx + 1}. ${err}`)
       })
     }
 
     // Log the request that caused the error
-    logMessage.push(`\n📥 Failed Request:`)
+    logMessage.push('\n📥 Failed Request:')
     logMessage.push(`   Method: ${requestData.method}`)
     logMessage.push(`   URL: ${requestData.url}`)
     logMessage.push(`   User: ${requestData.userId}`)

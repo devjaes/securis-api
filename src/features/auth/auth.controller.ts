@@ -82,13 +82,13 @@ export class AuthController {
 
       const tokenData = this.authService.generateJwtToken(user)
 
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+      const frontendUrl = process.env.FRONTEND_URL || 'https://localhost:5173'
       const redirectUrl = `${frontendUrl}/auth/callback?token=${tokenData.access_token}`
 
       return res.redirect(redirectUrl)
     } catch (error) {
       console.error('Error in Microsoft auth callback:', error)
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+      const frontendUrl = process.env.FRONTEND_URL || 'https://localhost:5173'
 
       let errorMessage = 'Authentication failed'
       if (error instanceof Error) {

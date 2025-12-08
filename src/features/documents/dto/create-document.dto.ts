@@ -158,6 +158,25 @@ export class CreateDocumentDto {
   qrSignature?: string
 
   @ApiProperty({
+    description:
+      'Si es true, genera automáticamente un código QR con información del remitente y reemplaza {{signature}} en el HTML',
+    example: false,
+    type: Boolean,
+    required: false,
+  })
+  @Transform(({ value }) => {
+    if (value === '' || value === null || value === undefined) {
+      return false
+    }
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true' || value === '1'
+    }
+    return Boolean(value)
+  })
+  @IsOptional()
+  includeSignature?: boolean
+
+  @ApiProperty({
     description: 'Lista de correos electrónicos de los destinatarios',
     example: ['usuario1@uta.edu.ec', 'usuario2@uta.edu.ec'],
     type: [String],
@@ -173,4 +192,22 @@ export class CreateDocumentDto {
     return value.split(',').map((email) => email.trim())
   })
   recipientEmails?: string[]
+
+  @ApiProperty({
+    description:
+      'ID del borrador a actualizar cuando se envía el documento. Si se proporciona y el status es ENVIADO, se actualizará el borrador en lugar de crear uno nuevo.',
+    example: 1,
+    type: Number,
+    required: false,
+  })
+  @Transform(({ value }) => {
+    if (value === '' || value === null || value === undefined || value == 0) {
+      return undefined
+    }
+    const num = Number(value)
+    return isNaN(num) ? undefined : num
+  })
+  @IsInt({ message: 'El ID del borrador debe ser un número entero' })
+  @IsOptional()
+  draftId?: number
 }

@@ -111,6 +111,15 @@ export class HuffmanBackService implements OnModuleInit {
   }
 
   /**
+   * Gets characters that cannot be encoded
+   */
+  getUnencodableCharacters(text: string): string[] {
+    this.ensureTreeLoaded()
+    const validation = this.encodeUseCase!.validate(text)
+    return validation.unencodableCharacters
+  }
+
+  /**
    * Validates if encoded text can be decoded
    */
   canDecode(encodedText: string): boolean {
