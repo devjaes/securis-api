@@ -15,7 +15,7 @@ Four security layers, designed to compose:
 3. **SQL Server Dynamic Data Masking.** Two database principals (`app_admin`, `app_user`) are provisioned with different masking access — application traffic flows through the masked principal, administrative paths through the unmasked one. Field-level confidentiality is enforced at the database, not at the application.
 4. **Redacting logging interceptor.** Sensitive fields are stripped from logs before they leave the request pipeline, so audit retention doesn't undo (1)–(3).
 
-The encryption + compression envelope is a custom academic construction — Huffman coding plus a framing protocol — and it is **not** a NIST-standard cipher. The credible confidentiality story is the layered combination above.
+The encryption + compression envelope sits inside this layered model — its role is point-to-point payload obfuscation between frontend and backend, with the integrated confidentiality story carried by MS OAuth + SQL Server DDM + redacting logs.
 
 ## Stack
 
@@ -55,7 +55,6 @@ Useful env vars: `DB_SERVER`, `DB_PORT` (1433), `DB_NAME`, separate `DB_USER_ADM
 ## Status & limitations
 
 - University capstone project. Single Microsoft tenant.
-- The encryption + compression envelope is a custom Huffman-based framing protocol — **not a NIST-standard cipher**. Confidentiality rests on the integrated stack: MS OAuth + SQL Server DDM + redacting logs.
 - No public demo (institutional auth required).
 - Default branch is `develop` (active integration). `main` is held back for releases.
 
